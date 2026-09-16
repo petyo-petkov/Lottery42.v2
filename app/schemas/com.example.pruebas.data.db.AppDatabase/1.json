@@ -1,0 +1,82 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "01abfd38348c1330fb996f6a64c5c4d5",
+    "entities": [
+      {
+        "tableName": "tickets",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`drawId` TEXT NOT NULL, `gameType` TEXT NOT NULL, `drawDate` TEXT NOT NULL, `gameStatus` TEXT NOT NULL, `bets` TEXT NOT NULL, `office` TEXT NOT NULL, `reintegro` TEXT NOT NULL, `joker` TEXT, `prize` TEXT, `betPrice` TEXT, PRIMARY KEY(`drawId`))",
+        "fields": [
+          {
+            "fieldPath": "drawId",
+            "columnName": "drawId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gameType",
+            "columnName": "gameType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "drawDate",
+            "columnName": "drawDate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gameStatus",
+            "columnName": "gameStatus",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bets",
+            "columnName": "bets",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "office",
+            "columnName": "office",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reintegro",
+            "columnName": "reintegro",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "joker",
+            "columnName": "joker",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "prize",
+            "columnName": "prize",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "betPrice",
+            "columnName": "betPrice",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "drawId"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '01abfd38348c1330fb996f6a64c5c4d5')"
+    ]
+  }
+}
