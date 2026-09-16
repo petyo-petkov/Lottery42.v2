@@ -2,6 +2,7 @@ package com.example.pruebas.presentation.homeScreen
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
+import com.example.pruebas.data.network.lotteryModels.checkModel.CheckModel
 import com.example.pruebas.domain.Ticket
 import kotlinx.serialization.json.JsonObject
 
@@ -18,5 +19,5 @@ data class HomeUiState(
     val showDeleteDialog: Boolean = false,
     val deleteDialogMode: DeleteDialogMode = DeleteDialogMode.DELETE_ALL,
     val isScanning: Boolean = false,
-    val checkModel: JsonObject? = null
+    val checkModel: CheckModel? = null
 )

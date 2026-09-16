@@ -66,12 +66,19 @@ class HomeScreenViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             val result = netRepo.checkLottery(
                 game = ticket.gameType,
-                numbers = ticket.bets,
+                numbers = ticket.numbers,
+                extraNumbers = ticket.extraNumbers,
                 drawId = ticket.drawId
             )
             Log.d("HomeScreenViewModel", "checkTicket: $result")
             state = state.copy(checkModel = result)
 
+            if (result.data?.isWinner != false) {
+                dbRepo.updateTicket(ticket.copy(
+                    prize = result.data?.prize?.prizeAmount ?: "0.0",
+                    isWinner = true
+                ))
+            }
         }
 
     }

@@ -25,13 +25,13 @@ data class Data(
     @SerialName("mainNumbersMatched")
     val mainNumbersMatched: Int,
     @SerialName("matchedExtraNumbers")
-    val matchedExtraNumbers: List<Int?>,
+    val matchedExtraNumbers: List<Int?>? = null,
     @SerialName("matchedNumbers")
     val matchedNumbers: List<Int>,
     @SerialName("prize")
-    val prize: Prize,
+    val prize: Prize? = null,
     @SerialName("winningCombination")
     val winningCombination: List<Int>,
     @SerialName("winningExtraNumbers")
-    val winningExtraNumbers: List<Int?>
+    val winningExtraNumbers: List<Int?>? = null
 )

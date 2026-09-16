@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -33,6 +32,7 @@ import com.example.pruebas.domain.Ticket
 import com.example.pruebas.presentation.detailScreen.detailsScreens.BonolotoDetails
 import com.example.pruebas.presentation.detailScreen.detailsScreens.EurodreamsDetails
 import com.example.pruebas.presentation.detailScreen.detailsScreens.EuromillonesDetails
+import com.example.pruebas.presentation.detailScreen.detailsScreens.Gordo
 import com.example.pruebas.presentation.detailScreen.detailsScreens.LoteriaNacional
 import com.example.pruebas.presentation.detailScreen.detailsScreens.PrimitivaDetails
 
@@ -88,15 +88,13 @@ fun DetailScreen(
                         "eurodreams" -> EurodreamsDetails(ticket)
                         "bonoloto" -> BonolotoDetails(ticket)
                         "nacional" -> LoteriaNacional(ticket)
-                        "gordo" -> {
-                            TODO()
-                        }
+                        "gordo" -> { Gordo(ticket) }
                     }
                 }
             }
             item {
                 Divisor()
-                Info(text = "\uD83C\uDFC6 ${ticket.prize.toDouble().toMoneyFormat()} €")
+                Info(text = "\uD83C\uDFC6 ${(ticket.prize.toDoubleOrNull() ?: 0.0).toMoneyFormat()} €")
             }
 
             item {

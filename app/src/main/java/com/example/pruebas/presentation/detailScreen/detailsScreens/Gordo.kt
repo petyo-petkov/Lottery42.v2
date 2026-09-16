@@ -10,29 +10,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.pruebas.domain.Ticket
-import com.example.pruebas.presentation.detailScreen.Divisor
-import com.example.pruebas.presentation.detailScreen.Info
 
 @Composable
-fun EuromillonesDetails(
-    ticket: Ticket
-){
+fun Gordo(ticket: Ticket){
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        val stars = ticket.extraNumbers ?: emptyList()
+        val claves = ticket.extraNumbers ?: emptyList()
         NumberRow(
             bets = ticket.numbers,
             contentAfterNumbers = { index ->
-                if (index < stars.size) {
-                    val starsInBet = stars[index].split(",")
+                if (index < claves.size) {
+                    val clavesInBet = claves[index].split(",")
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        starsInBet.forEach { star ->
+                        clavesInBet.forEach { star ->
                             NumberCircle(
                                 number = star,
                                 color = MaterialTheme.colorScheme.tertiaryContainer,
@@ -43,7 +39,8 @@ fun EuromillonesDetails(
                 }
             }
         )
-        Divisor()
-        Info(text = "Millon: ${ticket.millon}")
+
     }
+
+
 }

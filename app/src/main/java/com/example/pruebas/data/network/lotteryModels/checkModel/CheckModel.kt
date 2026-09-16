@@ -7,9 +7,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CheckModel(
     @SerialName("data")
-    val `data`: Data,
+    val `data`: Data? = null,
     @SerialName("success")
     val success: Boolean,
     @SerialName("timestamp")
-    val timestamp: String
+    val timestamp: String? = null
 )
