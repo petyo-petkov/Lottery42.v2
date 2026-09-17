@@ -5,11 +5,7 @@ import kotlinx.serialization.json.JsonObject
 
 interface NetworkRepo {
     suspend fun getLatestResult(game: String, date: String): Result<JsonObject>
-    suspend fun checkLottery(
-        game: String,
-        numbers: List<String>,
-        extraNumbers: List<String>?,
-        drawId: String?
-    ): CheckModel
+    suspend fun checkLottery(ticket: Ticket): List<Result<CheckModel>>
+    //suspend fun checkLottery(ticket: Ticket): Result<CheckModel>
 
 }

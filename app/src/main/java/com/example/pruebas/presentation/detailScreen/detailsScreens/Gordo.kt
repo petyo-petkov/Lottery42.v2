@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.pruebas.domain.Ticket
+import kotlin.collections.emptyList
 
 @Composable
 fun Gordo(ticket: Ticket){
@@ -18,7 +19,7 @@ fun Gordo(ticket: Ticket){
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        val claves = ticket.extraNumbers ?: emptyList()
+        val claves = ticket.clave ?: emptyList()
         NumberRow(
             bets = ticket.numbers,
             contentAfterNumbers = { index ->

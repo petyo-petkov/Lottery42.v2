@@ -17,7 +17,7 @@ fun EurodreamsDetails(ticket: Ticket) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        val dreams = ticket.extraNumbers ?: emptyList()
+        val dreams = ticket.dreams ?: emptyList()
         NumberRow(
             bets = ticket.numbers,
             contentAfterNumbers = { index ->

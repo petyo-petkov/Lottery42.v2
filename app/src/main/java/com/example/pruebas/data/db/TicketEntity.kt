@@ -2,7 +2,6 @@ package com.example.pruebas.data.db
 
 import androidx.room3.Entity
 import androidx.room3.PrimaryKey
-import com.example.pruebas.data.toDisplayDate
 import com.example.pruebas.domain.Ticket
 
 
@@ -15,17 +14,21 @@ data class TicketEntity(
     val cdc: String,
     val drawDate: String,
     val gameStatus: String,
-    val numbers: List<String>,
-    val extraNumbers: List<String>?,
     val office: String,
-    val millon: String?,
+    val numbers: List<String>,
+    val prize: String,
+    val betPrice: String,
+    val isWinner: Boolean,
     val joker: String?,
+    val reintegro: String?,
+    val stars: List<String>?,
+    val millon: String?,
+    val dreams: List<String>?,
     val numLottery: String?,
     val serie: String?,
     val fraccion: String?,
-    val prize: String,
-    val betPrice: String,
-    val isWinner: Boolean
+    val clave: List<String>?
+
 ) {
     fun toDomain(): Ticket {
         return Ticket(
@@ -34,19 +37,23 @@ data class TicketEntity(
             gameType = gameType,
             name = name,
             cdc = cdc,
-            drawDate = drawDate.toDisplayDate(),
+            drawDate = drawDate,
             gameStatus = gameStatus,
-            numbers = numbers,
-            extraNumbers = extraNumbers,
             office = office,
+            numbers = numbers,
+            prize = prize,
+            betPrice = betPrice,
+            isWinner = isWinner,
             joker = joker,
+            reintegro = reintegro,
+            stars = stars,
             millon = millon,
+            dreams = dreams,
             numLottery = numLottery,
             serie = serie,
             fraccion = fraccion,
-            prize = prize,
-            betPrice = betPrice,
-            isWinner = isWinner
+            clave = clave,
+
         )
     }
 }

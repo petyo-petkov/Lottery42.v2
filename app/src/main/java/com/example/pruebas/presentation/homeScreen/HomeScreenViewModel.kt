@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.pruebas.data.toMoneyFormat
 import com.example.pruebas.domain.LotteryDatabaseRepo
 import com.example.pruebas.domain.NetworkRepo
+import com.example.pruebas.domain.Ticket
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -64,23 +65,22 @@ class HomeScreenViewModel(
 
     private fun checkTicket(ticket: com.example.pruebas.domain.Ticket) {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = netRepo.checkLottery(
-                game = ticket.gameType,
-                numbers = ticket.numbers,
-                extraNumbers = ticket.extraNumbers,
-                drawId = ticket.drawId
-            )
-            Log.d("HomeScreenViewModel", "checkTicket: $result")
-            state = state.copy(checkModel = result)
+            var totalPrize = 0.0
+            val results = netRepo.checkLottery(ticket)
+            results.forEach { result ->
+                result.onSuccess { checkModel ->
+                    Log.d("HomeScreenViewModel", "checkTicket success: $checkModel")
+                    val amount = checkModel.data?.prize?.prizeAmount?.toDoubleOrNull() ?: 0.0
+                    totalPrize += amount
 
-            if (result.data?.isWinner != false) {
-                dbRepo.updateTicket(ticket.copy(
-                    prize = result.data?.prize?.prizeAmount ?: "0.0",
-                    isWinner = true
-                ))
+                    //state = state.copy(checkModel = checkModel)
+
+                }.onFailure { error ->
+                    Log.e("HomeScreenViewModel", "checkTicket failure", error)
+                }
             }
+            dbRepo.updateTicket(ticket.copy(prize = totalPrize.toString()))
         }
-
     }
 
     private fun deleteAll() {
@@ -101,7 +101,8 @@ class HomeScreenViewModel(
             ticket = this,
             height = calculateHeight(prizeValue),
             lotteryColor = getLotteryColor(gameType),
-            formattedPrize = prizeValue.toMoneyFormat()
+            formattedPrize = prizeValue.toString()
+            //formattedPrize = prizeValue.toMoneyFormat()
         )
     }
 

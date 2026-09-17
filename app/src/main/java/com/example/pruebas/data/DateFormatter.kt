@@ -3,7 +3,6 @@ package com.example.pruebas.data
 import android.util.Log
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
 
 private val MESES = mapOf(
     "ENE" to "01", "FEB" to "02", "MAR" to "03", "ABR" to "04",
@@ -11,27 +10,28 @@ private val MESES = mapOf(
     "SEP" to "09", "OCT" to "10", "NOV" to "11", "DIC" to "12"
 )
 fun String.toStoreDate(): String {
-    val formatter = DateTimeFormatter.ofPattern("ddMMyy")
-    val fechaEng = this.replace(Regex("[A-Z]{3}")) { MESES[it.value] ?: it.value }
-    val fecha = LocalDate.parse(fechaEng, formatter)
     return try {
+        val formatter = DateTimeFormatter.ofPattern("ddMMyy")
+        val fechaEng = this.replace(Regex("[A-Z]{3}")) { MESES[it.value] ?: it.value }
+        val fecha = LocalDate.parse(fechaEng, formatter)
         fecha.toString()
-    } catch (e: DateTimeParseException) {
-        Log.e("DateTimeConversion", "Error al convertir la fecha: $e")
-
-    }.toString()
+    } catch (e: Exception) {
+        Log.e("DateTimeConversion", "Error al convertir la fecha (toStoreDate): $e")
+        this
+    }
 }
 
 
 fun String.toDisplayDate(): String {
-    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    val outputFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
     return try {
+        val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val outputFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
         val localDate = LocalDate.parse(this, inputFormatter)
         outputFormatter.format(localDate)
-    } catch (e: DateTimeParseException) {
-        Log.e("DateTimeConversion", "Error al convertir la fecha: $e")
-    }.toString()
+    } catch (e: Exception) {
+        Log.e("DateTimeConversion", "Error al convertir la fecha (toDisplayDate): $e")
+        this
+    }
 }
 
 

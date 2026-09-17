@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import com.example.pruebas.data.toDisplayDate
 import com.example.pruebas.data.toMoneyFormat
 import com.example.pruebas.domain.Ticket
 import com.example.pruebas.presentation.detailScreen.detailsScreens.BonolotoDetails
@@ -94,7 +95,7 @@ fun DetailScreen(
             }
             item {
                 Divisor()
-                Info(text = "\uD83C\uDFC6 ${(ticket.prize.toDoubleOrNull() ?: 0.0).toMoneyFormat()} €")
+                Info(text = "\uD83C\uDFC6 ${(ticket.prize.toDoubleOrNull() ?: 0.0)} €")
             }
 
             item {

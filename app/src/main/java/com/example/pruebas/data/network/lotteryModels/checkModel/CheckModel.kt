@@ -6,10 +6,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CheckModel(
-    @SerialName("data")
-    val `data`: Data? = null,
     @SerialName("success")
     val success: Boolean,
+    @SerialName("data")
+    val `data`: Data? = null,
     @SerialName("timestamp")
     val timestamp: String? = null
 )

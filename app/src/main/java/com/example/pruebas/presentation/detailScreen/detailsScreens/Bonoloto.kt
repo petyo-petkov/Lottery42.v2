@@ -30,7 +30,7 @@ fun BonolotoDetails(ticket: Ticket) {
         ) {
             Text("Reintegro:")
             NumberCircle(
-                number = ticket.extraNumbers?.first().toString(),
+                number = ticket.reintegro ?: "",
                 color = MaterialTheme.colorScheme.secondaryContainer,
                 textColor = MaterialTheme.colorScheme.onSecondaryContainer
             )

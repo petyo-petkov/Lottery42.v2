@@ -22,7 +22,7 @@ fun EuromillonesDetails(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        val stars = ticket.extraNumbers ?: emptyList()
+        val stars = ticket.stars ?: emptyList()
         NumberRow(
             bets = ticket.numbers,
             contentAfterNumbers = { index ->

@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.pruebas.data.toDisplayDate
 import com.example.pruebas.domain.Ticket
 
 @Composable
@@ -70,7 +71,8 @@ fun TicketUI(
                 )
                 //Prize
                 Fila(
-                    text = "${uiModel.formattedPrize} €",
+                    //text = "${uiModel.formattedPrize} €",
+                    text = "${ticket.prize} €",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface
                 )

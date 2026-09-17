@@ -83,15 +83,16 @@ fun App(
             },
             detailPane = {
                 AnimatedPane {
-                    state.selectedTicket?.let { ticket ->
+                    state.selectedTicket?.let { selected ->
+                        val currentTicket = state.tickets.find { it.ticket.id == selected.id }?.ticket ?: selected
                         DetailScreen(
-                            ticket = ticket,
+                            ticket = currentTicket,
                             onDelete = {
                                 homeVM.onIntent(HomeIntent.ToggleDeleteDialog(DeleteDialogMode.DELETE_SINGLE))
                             },
                             onCheck = {
                                 coroutine.launch {
-                                    homeVM.onIntent(HomeIntent.CheckTicket(ticket))
+                                    homeVM.onIntent(HomeIntent.CheckTicket(currentTicket))
                                 }
                             }
                         )

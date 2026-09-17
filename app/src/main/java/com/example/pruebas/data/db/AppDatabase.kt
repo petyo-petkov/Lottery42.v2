@@ -5,7 +5,11 @@ import androidx.room3.RoomDatabase
 import androidx.room3.ColumnTypeConverters
 
 
-@Database(entities = [TicketEntity::class], version = 15, exportSchema = false)
+@Database(
+    entities = [TicketEntity::class],
+    version = 18,
+    exportSchema = false
+)
 @ColumnTypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun lotteryDao(): LotteryDAO

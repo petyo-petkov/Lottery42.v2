@@ -1,7 +1,6 @@
 package com.example.pruebas.data
 
 import com.example.pruebas.domain.Ticket
-import kotlin.random.Random
 
 fun parse(rawData: String): Map<String, String> {
     val data = rawData.split(";").filter { it.contains("=") }
@@ -32,6 +31,7 @@ fun createTicket(rawData: String): Ticket {
     val pairs = parse(rawData)
 
     val id = pairs["A"] ?: ""
+    var drawId = ""
     val cdc = pairs["S"]?.take(3) ?: ""
     val gameStatus = pairs["W"] ?: ""
     val office = pairs["T"] ?: ""
@@ -50,23 +50,24 @@ fun createTicket(rawData: String): Ticket {
         ?: emptyList()
 
     val numbers: MutableList<String> = mutableListOf()
-    val extraNumbers: MutableList<String> = mutableListOf()
 
-    var drawId = ""
+    val stars = mutableListOf<String>()
+    val dreams = mutableListOf<String>()
+    var reintegro: String? = ""
     var millon: String? = ""
     var joker: String? = ""
+    var claves = mutableListOf<String>()
     var numLottery: String? = ""
     var serie: String? = ""
     var fraccion: String? = ""
     var betPrice = "0.0"
-
     val prize = "0.0"
 
     when (gameType) {
         "primitiva" -> {
             drawId = pairs["A"]?.take(5) + "04" + cdc
             numbers += rawBets.map { it.substringAfter("=").chunked(2).joinToString(",") }
-            extraNumbers.add(pairs["R"] ?: "")
+            reintegro = pairs["R"]
             joker = pairs["J"]
             val price = (numbers.size * 1.0 )
             if (joker != "NO") price + 1.0
@@ -76,7 +77,7 @@ fun createTicket(rawData: String): Ticket {
         "bonoloto" -> {
             drawId = pairs["A"]?.take(5) + "01" + cdc
             numbers += rawBets.map { it.substringAfter("=").chunked(2).joinToString(",") }
-            extraNumbers.add(pairs["R"] ?: "")
+            reintegro = pairs["R"]
             betPrice = (numbers.size * 0.5 ).toString()
 
         }
@@ -86,7 +87,7 @@ fun createTicket(rawData: String): Ticket {
             numbers += rawBets.map {
                 it.substringAfter("=").substringBefore(":").chunked(2).joinToString(",")
             }
-            extraNumbers += rawBets.map {
+            dreams += rawBets.map {
                 it.substringAfter(":")
             }
             betPrice = (numbers.size * 2.5 ).toString()
@@ -97,7 +98,7 @@ fun createTicket(rawData: String): Ticket {
             numbers += rawBets.map {
                 it.substringAfter("=").substringBefore(":").chunked(2).joinToString(",")
             }
-            extraNumbers += rawBets.map {
+            stars += rawBets.map {
                 it.substringAfter(":").chunked(2).joinToString(",")
             }
             val regexMillon = """([A-Z0-9]+)]""".toRegex()
@@ -110,7 +111,7 @@ fun createTicket(rawData: String): Ticket {
             numbers += rawBets.map {
                 it.substringAfter("=").substringBefore(":").chunked(2).joinToString(",")
             }
-            extraNumbers += rawBets.map {
+            claves += rawBets.map {
                 it.substringAfter(":")
             }
             betPrice = (numbers.size * 1.5 ).toString()
@@ -135,17 +136,21 @@ fun createTicket(rawData: String): Ticket {
         cdc = cdc,
         drawDate = date,
         gameStatus = gameStatus,
-        numbers = numbers,
-        extraNumbers = extraNumbers,
         office = office,
+        numbers = numbers,
+        prize = prize,
+        betPrice = betPrice,
+        isWinner = false,
         joker = joker,
+        reintegro = reintegro,
+        stars = stars,
         millon = millon,
+        dreams = dreams,
         numLottery = numLottery,
         serie = serie,
         fraccion = fraccion,
-        prize = prize,
-        betPrice = betPrice,
-        isWinner = false
+        clave = claves,
+
     )
 
 
