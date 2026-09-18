@@ -1,5 +1,6 @@
 package com.example.pruebas.presentation.detailScreen
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,11 +14,9 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -25,36 +24,39 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import com.example.pruebas.data.toDisplayDate
-import com.example.pruebas.data.toMoneyFormat
-import com.example.pruebas.domain.Ticket
+import com.example.pruebas.presentation.Divisor
+import com.example.pruebas.presentation.Info
 import com.example.pruebas.presentation.detailScreen.detailsScreens.BonolotoDetails
 import com.example.pruebas.presentation.detailScreen.detailsScreens.EurodreamsDetails
 import com.example.pruebas.presentation.detailScreen.detailsScreens.EuromillonesDetails
 import com.example.pruebas.presentation.detailScreen.detailsScreens.Gordo
 import com.example.pruebas.presentation.detailScreen.detailsScreens.LoteriaNacional
 import com.example.pruebas.presentation.detailScreen.detailsScreens.PrimitivaDetails
+import com.example.pruebas.presentation.homeScreen.TicketUiModel
 
 
 @Composable
 fun DetailScreen(
     modifier: Modifier = Modifier,
-    ticket: Ticket,
+    ticketUiModel: TicketUiModel,
     onDelete: () -> Unit,
-    onCheck: () -> Unit
+    onCheck: () -> Unit,
+    onInfo: () -> Unit
 ) {
     val buttonTexts = listOf("Borrar", "Comprobar", "Info")
     val buttonIcons =
         listOf(Icons.Outlined.Delete, Icons.Outlined.Check, Icons.Outlined.Info)
     var selectedItemIndex by remember { mutableIntStateOf(1) }
 
+    val ticket = ticketUiModel.ticket
+
+    
     OutlinedCard(
-        modifier = modifier.padding(8.dp),
-        colors = CardDefaults.outlinedCardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
+        modifier = modifier
+            .padding(8.dp),
+        colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+        border = BorderStroke(color = ticketUiModel.lotteryColor, width = 1.dp)
     ) {
         LazyColumn(
             modifier = modifier
@@ -66,7 +68,8 @@ fun DetailScreen(
             item {
                 Info(
                     text = ticket.name,
-                    style = MaterialTheme.typography.displayMedium
+                    style = MaterialTheme.typography.displayMedium,
+                    color = ticketUiModel.lotteryColor
                 )
                 Divisor()
                 Info(text = ticket.drawDate)
@@ -89,7 +92,9 @@ fun DetailScreen(
                         "eurodreams" -> EurodreamsDetails(ticket)
                         "bonoloto" -> BonolotoDetails(ticket)
                         "nacional" -> LoteriaNacional(ticket)
-                        "gordo" -> { Gordo(ticket) }
+                        "gordo" -> {
+                            Gordo(ticket)
+                        }
                     }
                 }
             }
@@ -110,6 +115,7 @@ fun DetailScreen(
                             onClick = {
                                 if (index == 0) onDelete()
                                 if (index == 1) onCheck()
+                                if (index == 2) onInfo()
                                 selectedItemIndex = index
                             },
                             label = label,
@@ -127,26 +133,4 @@ fun DetailScreen(
 
     }
 
-}
-
-@Composable
-fun Info(
-    text: String,
-    style: TextStyle = MaterialTheme.typography.titleLarge
-) {
-    Text(
-        text = text,
-        modifier = Modifier.padding(6.dp),
-        color = MaterialTheme.colorScheme.onSurface,
-        style = style
-    )
-}
-
-
-@Composable
-fun Divisor() {
-    HorizontalDivider(
-        modifier = Modifier.padding(top = 12.dp, bottom = 12.dp),
-        color = MaterialTheme.colorScheme.tertiary
-    )
 }

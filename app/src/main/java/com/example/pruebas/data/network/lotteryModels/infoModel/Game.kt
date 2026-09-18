@@ -1,11 +1,11 @@
-package com.example.pruebas.data.network.lotteryModels.checkModel
+package com.example.pruebas.data.network.lotteryModels.infoModel
 
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CheckLotteryGame(
+data class InfoLotteryGame(
     @SerialName("name")
     val name: String? = null,
     @SerialName("slug")

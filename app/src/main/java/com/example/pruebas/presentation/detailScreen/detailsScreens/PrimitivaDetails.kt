@@ -11,8 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.pruebas.domain.Ticket
-import com.example.pruebas.presentation.detailScreen.Divisor
-import com.example.pruebas.presentation.detailScreen.Info
+import com.example.pruebas.presentation.Divisor
+import com.example.pruebas.presentation.Info
 
 @Composable
 fun PrimitivaDetails(ticket: Ticket) {

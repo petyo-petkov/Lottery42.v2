@@ -1,6 +1,5 @@
 package com.example.pruebas.presentation
 
-import MyFAB
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -26,6 +25,7 @@ import com.example.pruebas.presentation.homeScreen.DeleteDialogMode
 import com.example.pruebas.presentation.homeScreen.HomeIntent
 import com.example.pruebas.presentation.homeScreen.HomeScreen
 import com.example.pruebas.presentation.homeScreen.HomeScreenViewModel
+import com.example.pruebas.presentation.homeScreen.MyFAB
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -83,16 +83,22 @@ fun App(
             },
             detailPane = {
                 AnimatedPane {
-                    state.selectedTicket?.let { selected ->
-                        val currentTicket = state.tickets.find { it.ticket.id == selected.id }?.ticket ?: selected
+                    state.selectedTicketUiModel?.let { ticketUiModel ->
+                        val currentTicket = ticketUiModel.ticket
                         DetailScreen(
-                            ticket = currentTicket,
+                            ticketUiModel = ticketUiModel,
                             onDelete = {
                                 homeVM.onIntent(HomeIntent.ToggleDeleteDialog(DeleteDialogMode.DELETE_SINGLE))
                             },
                             onCheck = {
                                 coroutine.launch {
                                     homeVM.onIntent(HomeIntent.CheckTicket(currentTicket))
+                                }
+                            },
+                            onInfo = {
+                                coroutine.launch {
+                                    homeVM.onIntent(HomeIntent.CheckInfo(currentTicket))
+                                    navigator.navigateTo(pane = ThreePaneScaffoldRole.Tertiary)
                                 }
                             }
                         )
@@ -101,7 +107,15 @@ fun App(
             },
             extraPane = {
                 AnimatedPane {
-                    ExtraDetailScreen()
+                    ExtraDetailScreen(
+                        model = state.infoModel,
+                        isLoading = state.isLoadingInfo
+                    )
+//                    state.selectedTicketUiModel?.let { ticketUiModel ->
+//                        ExtraDetailScreen(
+//                            ticketUiModel = ticketUiModel
+//                        )
+//                    }
                 }
             },
             defaultBackBehavior = BackNavigationBehavior.PopUntilContentChange

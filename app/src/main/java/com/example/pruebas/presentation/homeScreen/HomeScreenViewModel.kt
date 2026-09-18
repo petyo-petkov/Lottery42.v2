@@ -9,10 +9,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pruebas.data.toMoneyFormat
 import com.example.pruebas.domain.LotteryDatabaseRepo
 import com.example.pruebas.domain.NetworkRepo
-import com.example.pruebas.domain.Ticket
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -32,17 +30,17 @@ class HomeScreenViewModel(
         }
     }
 
-     fun onIntent(intent: HomeIntent) {
+    fun onIntent(intent: HomeIntent) {
         when (intent) {
             is HomeIntent.SelectTicket -> {
-                state = state.copy(selectedTicket = intent.ticket)
+                state = state.copy(selectedTicketId = intent.ticket.id)
             }
 
             is HomeIntent.DeleteTicket -> {
                 deleteTicket(intent.ticket)
             }
 
-            HomeIntent.DeleteAll -> {
+            is HomeIntent.DeleteAll -> {
                 deleteAll()
             }
 
@@ -53,12 +51,16 @@ class HomeScreenViewModel(
                 )
             }
 
-            HomeIntent.Scann -> {
+            is HomeIntent.Scann -> {
                 state = state.copy(isScanning = !state.isScanning)
             }
 
             is HomeIntent.CheckTicket -> {
                 checkTicket(intent.ticket)
+            }
+
+            is HomeIntent.CheckInfo -> {
+                checkInfo(intent.ticket)
             }
         }
     }
@@ -73,13 +75,29 @@ class HomeScreenViewModel(
                     val amount = checkModel.data?.prize?.prizeAmount?.toDoubleOrNull() ?: 0.0
                     totalPrize += amount
 
-                    //state = state.copy(checkModel = checkModel)
+                    state = state.copy(checkModel = checkModel)
 
                 }.onFailure { error ->
                     Log.e("HomeScreenViewModel", "checkTicket failure", error)
                 }
             }
             dbRepo.updateTicket(ticket.copy(prize = totalPrize.toString()))
+        }
+    }
+
+    private fun checkInfo(ticket: com.example.pruebas.domain.Ticket) {
+        state = state.copy(isLoadingInfo = true)
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = netRepo.getInfo(ticket)
+            result.onSuccess { infoModel ->
+                state = state.copy(infoModel = infoModel, isLoadingInfo = false)
+                Log.d("HomeScreenViewModel", "checkTicket success: $infoModel")
+            }
+                .onFailure { error ->
+                    state = state.copy(isLoadingInfo = false)
+                    Log.e("HomeScreenViewModel", "checkTicket failure", error)
+                }
+
         }
     }
 

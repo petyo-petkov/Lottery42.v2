@@ -9,6 +9,8 @@ sealed interface HomeIntent {
     data class ToggleDeleteDialog(val mode: DeleteDialogMode? = null) : HomeIntent
     object Scann : HomeIntent
     data class CheckTicket(val ticket: Ticket) : HomeIntent
+
+    data class CheckInfo(val ticket: Ticket) : HomeIntent
 }
 
 enum class DeleteDialogMode {

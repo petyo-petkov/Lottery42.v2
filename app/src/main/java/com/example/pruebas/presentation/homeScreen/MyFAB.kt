@@ -1,3 +1,5 @@
+package com.example.pruebas.presentation.homeScreen
+
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete

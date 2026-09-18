@@ -5,11 +5,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -20,8 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.pruebas.data.toDisplayDate
 import com.example.pruebas.domain.Ticket
 
 @Composable
@@ -36,7 +32,7 @@ fun TicketUI(
         modifier = Modifier
             .fillMaxWidth()
             .height(uiModel.height),
-        colors = CardDefaults.outlinedCardColors(MaterialTheme.colorScheme.surfaceContainerLow),
+        colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
         border = BorderStroke(color = uiModel.lotteryColor, width = 1.dp)
     ) {
 
@@ -83,7 +79,7 @@ fun TicketUI(
 }
 
 @Composable
-fun Fila(text: String, style: TextStyle, color: Color ) {
+fun Fila(text: String, style: TextStyle, color: Color) {
     Box(
         modifier = Modifier,
         contentAlignment = Alignment.Center
