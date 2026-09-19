@@ -16,6 +16,7 @@ data class Ticket(
     val prize: String = "0.0",                          // Ganancia
     val betPrice: String = "0.0",                       // Precio
     val isWinner: Boolean = false,
+    val isChecked: Boolean = false,
 
     //Primitiva
     val joker: String? = null,                          // J = NO
@@ -35,9 +36,8 @@ data class Ticket(
 
     //El Gordo
     val clave: List<String>? = emptyList()
-
-
 ) {
+    val lotteryGame: LotteryGame get() = LotteryGame.fromType(gameType)
 
     fun toEntity(): TicketEntity {
 
@@ -54,6 +54,7 @@ data class Ticket(
             prize = prize,
             betPrice = betPrice,
             isWinner = isWinner,
+            isChecked = isChecked,
             joker = joker,
             reintegro = reintegro,
             stars = stars,

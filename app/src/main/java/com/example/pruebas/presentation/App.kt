@@ -111,11 +111,6 @@ fun App(
                         model = state.infoModel,
                         isLoading = state.isLoadingInfo
                     )
-//                    state.selectedTicketUiModel?.let { ticketUiModel ->
-//                        ExtraDetailScreen(
-//                            ticketUiModel = ticketUiModel
-//                        )
-//                    }
                 }
             },
             defaultBackBehavior = BackNavigationBehavior.PopUntilContentChange

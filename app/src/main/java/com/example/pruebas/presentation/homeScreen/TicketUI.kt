@@ -1,5 +1,6 @@
 package com.example.pruebas.presentation.homeScreen
 
+import android.graphics.drawable.Icon
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,7 +9,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -18,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import com.example.pruebas.data.toDisplayDate
 import com.example.pruebas.domain.Ticket
 
 @Composable
@@ -26,14 +31,15 @@ fun TicketUI(
     onClick: (Ticket) -> Unit
 ) {
     val ticket = uiModel.ticket
+    val lotteryColor = Color(uiModel.lotteryColorHex)
 
     OutlinedCard(
         onClick = { onClick(ticket) },
         modifier = Modifier
             .fillMaxWidth()
-            .height(uiModel.height),
+            .height(uiModel.height.dp),
         colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
-        border = BorderStroke(color = uiModel.lotteryColor, width = 1.dp)
+        border = BorderStroke(color = lotteryColor, width = 1.dp)
     ) {
 
         Column(
@@ -43,7 +49,7 @@ fun TicketUI(
         ) {
             // Date
             Fila(
-                text = ticket.drawDate,
+                text = ticket.drawDate.toDisplayDate(),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -51,7 +57,7 @@ fun TicketUI(
             Fila(
                 text = ticket.name,
                 style = MaterialTheme.typography.headlineSmallEmphasized,
-                color = uiModel.lotteryColor
+                color = lotteryColor
             )
 
             Row(
@@ -66,12 +72,27 @@ fun TicketUI(
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 //Prize
-                Fila(
-                    //text = "${uiModel.formattedPrize} €",
-                    text = "${ticket.prize} €",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+                if (ticket.isChecked) {
+
+                    val prizeTextColor = when (uiModel.prizeStatus) {
+                        PrizeStatus.NO_PRIZE -> MaterialTheme.colorScheme.error
+                        PrizeStatus.WINNER -> MaterialTheme.colorScheme.onPrimary
+                        PrizeStatus.UNKNOWN -> MaterialTheme.colorScheme.onSurfaceVariant
+                    }
+                    Fila(
+                        //text = "${uiModel.formattedPrize} €",
+                        text = "${ticket.prize} €",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = prizeTextColor
+
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Filled.QuestionMark,
+                        contentDescription = null,
+                        tint = Color.Yellow
+                    )
+                }
             }
         }
 

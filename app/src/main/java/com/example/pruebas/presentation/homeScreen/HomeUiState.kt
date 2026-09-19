@@ -6,11 +6,21 @@ import com.example.pruebas.data.network.lotteryModels.checkModel.CheckModel
 import com.example.pruebas.data.network.lotteryModels.infoModel.InfoModel
 import com.example.pruebas.domain.Ticket
 
+
+enum class PrizeStatus {
+    NO_PRIZE,   // No premiado (0.0 €)
+    WINNER,     // Premiado (> 0.0 €)
+    UNKNOWN     // No comprobado aún
+}
+
+
 data class TicketUiModel(
     val ticket: Ticket,
-    val height: Dp,
-    val lotteryColor: Color,
+    val height: Int,
+    val lotteryColorHex: Long,
+    val prizeStatus: PrizeStatus,
     val formattedPrize: String,
+    val isChecked: Boolean = false
 )
 
 data class HomeUiState(
@@ -21,7 +31,8 @@ data class HomeUiState(
     val isScanning: Boolean = false,
     val isLoadingInfo: Boolean = false,
     val checkModel: CheckModel? = null,
-    val infoModel: InfoModel? = null
+    val infoModel: InfoModel? = null,
+
 ) {
     val selectedTicketUiModel: TicketUiModel?
         get() = tickets.find { it.ticket.id == selectedTicketId }

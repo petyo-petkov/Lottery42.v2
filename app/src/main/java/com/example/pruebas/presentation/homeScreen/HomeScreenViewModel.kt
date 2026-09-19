@@ -4,9 +4,6 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pruebas.domain.LotteryDatabaseRepo
@@ -25,7 +22,7 @@ class HomeScreenViewModel(
     init {
         viewModelScope.launch {
             dbRepo.getAllTickets().collect { tickets ->
-                state = state.copy(tickets = tickets.map { it.toUiModel() })
+                state = state.copy(tickets = tickets.map { TicketUiMapper.toUiModel(it) })
             }
         }
     }
@@ -81,7 +78,7 @@ class HomeScreenViewModel(
                     Log.e("HomeScreenViewModel", "checkTicket failure", error)
                 }
             }
-            dbRepo.updateTicket(ticket.copy(prize = totalPrize.toString()))
+            dbRepo.updateTicket(ticket.copy(prize = totalPrize.toString(), isChecked = true))
         }
     }
 
@@ -110,40 +107,6 @@ class HomeScreenViewModel(
     private fun deleteTicket(ticket: com.example.pruebas.domain.Ticket) {
         viewModelScope.launch(Dispatchers.IO) {
             dbRepo.deleteTicket(ticket)
-        }
-    }
-
-    private fun com.example.pruebas.domain.Ticket.toUiModel(): TicketUiModel {
-        val prizeValue = prize.toDoubleOrNull() ?: 0.0
-        return TicketUiModel(
-            ticket = this,
-            height = calculateHeight(prizeValue),
-            lotteryColor = getLotteryColor(gameType),
-            formattedPrize = prizeValue.toString()
-            //formattedPrize = prizeValue.toMoneyFormat()
-        )
-    }
-
-    private fun calculateHeight(prize: Double): Dp {
-        return when {
-            prize > 800000.0 -> 200.dp
-            prize > 500000.0 -> 180.dp
-            prize > 30000.0 -> 160.dp
-            prize > 15000.0 -> 140.dp
-            prize > 1.0 -> 120.dp
-            else -> 100.dp
-        }
-    }
-
-    private fun getLotteryColor(gameType: String): Color {
-        return when (gameType) {
-            "bonoloto" -> Color(color = 0xFF98A065)
-            "primitiva" -> Color(color = 0xFF43A047)
-            "euromillones" -> Color(color = 0xFF283593)
-            "nacional" -> Color(color = 0xFF0277BD)
-            "gordo" -> Color(color = 0xFFC0392B)
-            "eurodreams" -> Color(color = 0xFF8E24AA)
-            else -> Color.Black
         }
     }
 }
