@@ -23,10 +23,10 @@ object TicketUiMapper {
 
     private fun calculateHeight(prize: Double): Int {
         return when {
-            prize > 800000.0 -> 200
-            prize > 500000.0 -> 180
-            prize > 30000.0 -> 160
-            prize > 15000.0 -> 140
+            prize > 80.0 -> 200
+            prize > 30.0 -> 180
+            prize > 8.0 -> 160
+            prize > 3.0 -> 140
             prize > 1.0 -> 120
             else -> 100
         }

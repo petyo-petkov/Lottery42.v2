@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.pruebas.domain.Ticket
 import com.example.pruebas.presentation.Divisor
+import com.example.pruebas.presentation.Info
 
 @Composable
 fun BonolotoDetails(ticket: Ticket) {
@@ -28,7 +29,7 @@ fun BonolotoDetails(ticket: Ticket) {
             horizontalArrangement = Arrangement.spacedBy(6.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Reintegro:")
+            Info("Reintegro:")
             NumberCircle(
                 number = ticket.reintegro ?: "",
                 color = MaterialTheme.colorScheme.secondaryContainer,

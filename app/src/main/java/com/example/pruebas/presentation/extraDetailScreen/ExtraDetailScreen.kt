@@ -2,6 +2,7 @@ package com.example.pruebas.presentation.extraDetailScreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,17 +23,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.pruebas.data.network.lotteryModels.infoModel.InfoLotteryPrize
 import com.example.pruebas.data.network.lotteryModels.infoModel.InfoModel
+import com.example.pruebas.data.toDisplayDate
+import com.example.pruebas.domain.Ticket
 import com.example.pruebas.presentation.Divisor
 import com.example.pruebas.presentation.Info
+import com.example.pruebas.presentation.detailScreen.detailsScreens.BonolotoDetails
+import com.example.pruebas.presentation.detailScreen.detailsScreens.EurodreamsDetails
+import com.example.pruebas.presentation.detailScreen.detailsScreens.EuromillonesDetails
+import com.example.pruebas.presentation.detailScreen.detailsScreens.Gordo
+import com.example.pruebas.presentation.detailScreen.detailsScreens.LoteriaNacional
 import com.example.pruebas.presentation.detailScreen.detailsScreens.NumberCircle
+import com.example.pruebas.presentation.detailScreen.detailsScreens.PrimitivaDetails
 
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ExtraDetailScreen(
-    modifier: Modifier = Modifier,
-    model: InfoModel?,
-    isLoading: Boolean
+    modifier: Modifier = Modifier, model: InfoModel?, selectedTicket: Ticket?, isLoading: Boolean
 ) {
 
     val info = model?.data?.get(0)
@@ -58,12 +65,30 @@ fun ExtraDetailScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-
                 item {
                     Info(text = info?.game?.name ?: "")
                     Divisor()
-                    Info(text = info?.drawDate ?: "")
+                    Info(text = info?.drawDate?.toDisplayDate() ?: "")
                     Divisor()
+                    Info(text = "Mis Combinaciones:")
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        when (selectedTicket?.gameType) {
+                            "euromillones" -> EuromillonesDetails(selectedTicket)
+                            "primitiva" -> PrimitivaDetails(selectedTicket)
+                            "eurodreams" -> EurodreamsDetails(selectedTicket)
+                            "bonoloto" -> BonolotoDetails(selectedTicket)
+                            "nacional" -> LoteriaNacional(selectedTicket)
+                            "gordo" -> {
+                                Gordo(selectedTicket)
+                            }
+                        }
+                    }
+                    Divisor()
+
                     Info("Combinación ganadora:")
                     Row(
                         modifier = modifier.padding(8.dp),
@@ -82,22 +107,26 @@ fun ExtraDetailScreen(
                     Divisor()
 
 
-                    Row() {
-                        Info("Reintegro:")
-                        NumberCircle(
-                            number = "${info?.resultData?.reintegro}",
-                            color = MaterialTheme.colorScheme.secondaryContainer
-                        )
-                    }
-                    Divisor()
-                    Row() {
-                        Info("Complimentario:")
-                        NumberCircle(
-                            number = "${info?.resultData?.complementario}",
-                            color = MaterialTheme.colorScheme.tertiaryContainer
+                    if(info?.resultData?.reintegro != null){
+                        Row() {
+                            Info("Reintegro:")
+                            NumberCircle(
+                                number = "${info.resultData.reintegro}",
+                                color = MaterialTheme.colorScheme.secondaryContainer
                             )
+                        }
+                        Divisor()
                     }
-                    Divisor()
+                    if(info?.resultData?.complementario != null){
+                        Row() {
+                            Info("Complimentario:")
+                            NumberCircle(
+                                number = "${info.resultData.complementario}",
+                                color = MaterialTheme.colorScheme.tertiaryContainer
+                            )
+                        }
+                        Divisor()
+                    }
 
 
                     Info("Jackpot:")
@@ -105,8 +134,7 @@ fun ExtraDetailScreen(
                     Divisor()
 
                 }
-
-                escrutinioSection(info?.prizes as List<InfoLotteryPrize>)
+                escrutinioSection((info?.prizes ?: emptyList()))
 
 
             }
@@ -116,7 +144,7 @@ fun ExtraDetailScreen(
 }
 
 
-private fun LazyListScope.escrutinioSection(prize: List<InfoLotteryPrize>) {
+private fun LazyListScope.escrutinioSection(prize: List<InfoLotteryPrize?>) {
     item {
         Text("Escrutinio:", style = MaterialTheme.typography.headlineSmall)
     }
@@ -156,17 +184,17 @@ private fun LazyListScope.escrutinioSection(prize: List<InfoLotteryPrize>) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = item.categoryName ?: "",
+                text = item?.categoryName ?: "",
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.weight(1f)
             )
             Text(
-                text = item.winners.toString(),
+                text = item?.winners.toString(),
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.weight(1f)
             )
             Text(
-                text = "${item.formattedPrize}",
+                text = "${item?.formattedPrize}",
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.End
@@ -174,6 +202,4 @@ private fun LazyListScope.escrutinioSection(prize: List<InfoLotteryPrize>) {
         }
     }
 }
-
-
 

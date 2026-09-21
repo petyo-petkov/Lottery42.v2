@@ -17,7 +17,7 @@ class ExampleUnitTest {
     }
 
     @Test
-    fun verificarParceo() {
+    fun netPruebas() {
         kotlinx.coroutines.runBlocking {
             NetPruebas().netPruebas()
         }

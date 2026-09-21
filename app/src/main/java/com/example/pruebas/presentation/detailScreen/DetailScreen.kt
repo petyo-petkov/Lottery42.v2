@@ -22,12 +22,14 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.pruebas.data.toDisplayDate
 import com.example.pruebas.presentation.Divisor
 import com.example.pruebas.presentation.Info
 import com.example.pruebas.presentation.detailScreen.detailsScreens.BonolotoDetails
@@ -36,6 +38,7 @@ import com.example.pruebas.presentation.detailScreen.detailsScreens.Euromillones
 import com.example.pruebas.presentation.detailScreen.detailsScreens.Gordo
 import com.example.pruebas.presentation.detailScreen.detailsScreens.LoteriaNacional
 import com.example.pruebas.presentation.detailScreen.detailsScreens.PrimitivaDetails
+import com.example.pruebas.presentation.homeScreen.HomeUiState
 import com.example.pruebas.presentation.homeScreen.TicketUiModel
 
 
@@ -43,6 +46,7 @@ import com.example.pruebas.presentation.homeScreen.TicketUiModel
 fun DetailScreen(
     modifier: Modifier = Modifier,
     ticketUiModel: TicketUiModel,
+    state: HomeUiState,
     onDelete: () -> Unit,
     onCheck: () -> Unit,
     onInfo: () -> Unit
@@ -55,9 +59,11 @@ fun DetailScreen(
     val ticket = ticketUiModel.ticket
     val lotteryColor = Color(ticketUiModel.lotteryColorHex)
 
+    var showDialog by remember() { mutableStateOf(false) }
+
     OutlinedCard(
         modifier = modifier
-            .padding(8.dp),
+            .padding(6.dp),
         colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
         border = BorderStroke(color = lotteryColor, width = 1.dp)
     ) {
@@ -75,7 +81,7 @@ fun DetailScreen(
                     color = lotteryColor
                 )
                 Divisor()
-                Info(text = ticket.drawDate)
+                Info(text = ticket.drawDate.toDisplayDate())
                 Divisor()
                 Info(text = "Id: ${ticket.drawId}")
                 Divisor()
@@ -95,9 +101,7 @@ fun DetailScreen(
                         "eurodreams" -> EurodreamsDetails(ticket)
                         "bonoloto" -> BonolotoDetails(ticket)
                         "nacional" -> LoteriaNacional(ticket)
-                        "gordo" -> {
-                            Gordo(ticket)
-                        }
+                        "gordo" -> { Gordo(ticket) }
                     }
                 }
             }
@@ -128,7 +132,10 @@ fun DetailScreen(
                         clickableItem(
                             onClick = {
                                 if (index == 0) onDelete()
-                                if (index == 1) onCheck()
+                                if (index == 1) {
+                                    onCheck()
+                                    showDialog = true
+                                }
                                 if (index == 2) onInfo()
                                 selectedItemIndex = index
                             },
@@ -147,4 +154,12 @@ fun DetailScreen(
 
     }
 
+    if (showDialog && state.checkModel?.data != null) {
+        InfoDialog(
+            onDismiss = { showDialog = false },
+            showDialog = true,
+            checkdata = state.checkModel
+        )
+    }
 }
+

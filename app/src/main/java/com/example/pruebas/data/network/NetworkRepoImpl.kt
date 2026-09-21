@@ -1,6 +1,5 @@
 package com.example.pruebas.data.network
 
-import android.util.Log
 import com.example.pruebas.data.network.lotteryModels.checkModel.CheckModel
 import com.example.pruebas.data.network.lotteryModels.infoModel.InfoModel
 import com.example.pruebas.domain.LotteryGame
@@ -46,16 +45,16 @@ class NetworkRepoImpl(private val client: HttpClient) : NetworkRepo {
 
                     when (game) {
                         is LotteryGame.Bonoloto, is LotteryGame.Primitiva -> {
-                            parameter("numbers", combination)
-                            ticket.reintegro?.let { parameter("extraNumbers", it) }
+                            parameter("numbers", "$combination,${ticket.reintegro}")
+                           // ticket.reintegro?.let { parameter("extraNumbers", it) }
                         }
                         is LotteryGame.Euromillones -> {
                             parameter("numbers", combination)
                             parameter("extraNumbers", ticket.stars?.joinToString(","))
                         }
                         is LotteryGame.Gordo -> {
-                            parameter("numbers", combination)
-                            parameter("extraNumbers", ticket.clave?.joinToString(","))
+                            parameter("numbers", "$combination,${ticket.clave}")
+                            //parameter("extraNumbers", ticket.clave?.joinToString(","))
                         }
                         is LotteryGame.Eurodreams -> {
                             parameter("numbers", combination)

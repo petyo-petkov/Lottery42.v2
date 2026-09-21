@@ -20,7 +20,7 @@ fun EuromillonesDetails(
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         val stars = ticket.stars ?: emptyList()
         NumberRow(

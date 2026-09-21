@@ -11,6 +11,7 @@ import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
+import io.ktor.client.statement.request
 import io.ktor.http.HttpHeaders
 import io.ktor.http.path
 import io.ktor.serialization.kotlinx.json.json
@@ -40,21 +41,21 @@ class NetPruebas() {
     suspend fun netPruebas() : JsonObject {
 
 
-        val numbers = "2,18,11,31,38,45"
+        val numbers = "10,44,46,31,38,41"
+        val numbers2 = "45,7,40,31,38,2"
+        val reintegro = "04"
         val drawId = "1323004113"
 
         val result = client.get{
             url {
                 path("results", "primitiva", "check")
             }
-            parameter("numbers", numbers)
-            parameter("extraNumbers" ,"04,")
+            parameter("numbers", "$numbers,$reintegro")
             parameter("drawId", drawId)
         }
 
+        println("URL: ${result.request.url}")
         println(result.body<JsonObject>())
         return result.body()
     }
-
-
 }

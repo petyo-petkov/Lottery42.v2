@@ -87,6 +87,7 @@ fun App(
                         val currentTicket = ticketUiModel.ticket
                         DetailScreen(
                             ticketUiModel = ticketUiModel,
+                            state = state,
                             onDelete = {
                                 homeVM.onIntent(HomeIntent.ToggleDeleteDialog(DeleteDialogMode.DELETE_SINGLE))
                             },
@@ -109,6 +110,7 @@ fun App(
                 AnimatedPane {
                     ExtraDetailScreen(
                         model = state.infoModel,
+                        selectedTicket = state.selectedTicket,
                         isLoading = state.isLoadingInfo
                     )
                 }

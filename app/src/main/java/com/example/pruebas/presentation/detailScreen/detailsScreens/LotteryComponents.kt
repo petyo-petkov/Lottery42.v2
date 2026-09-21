@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
@@ -26,7 +27,7 @@ fun NumberRow(
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         bets.forEachIndexed { index, bet ->
             val numbers = bet.split(",")
@@ -51,12 +52,12 @@ fun NumberRow(
 @Composable
 fun NumberCircle(
     number: String,
-    color: Color,
+    color: Color = MaterialTheme.colorScheme.primaryContainer,
     textColor: Color = MaterialTheme.colorScheme.onPrimaryContainer
 ) {
     Box(
-        modifier = Modifier
-            .size(42.dp)
+        modifier = Modifier.padding(0.dp)
+            .size(38.dp)
             .clip(CircleShape)
             .background(color),
         contentAlignment = Alignment.Center

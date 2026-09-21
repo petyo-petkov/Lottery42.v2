@@ -13,12 +13,12 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun Info(
-    text: String,
+    text: String?,
     style: TextStyle = MaterialTheme.typography.titleLarge,
     color: Color = MaterialTheme.colorScheme.onSurface,
 ) {
     Text(
-        text = text,
+        text = text ?: "",
         modifier = Modifier.padding(6.dp),
         color = color,
         style = style

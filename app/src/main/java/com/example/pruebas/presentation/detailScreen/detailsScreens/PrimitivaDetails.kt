@@ -19,13 +19,13 @@ fun PrimitivaDetails(ticket: Ticket) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         NumberRow(bets = ticket.numbers)
         Divisor()
         Row(
             modifier = Modifier,
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text("Reintegro:")
