@@ -8,7 +8,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.ui.Modifier
 import com.example.pruebas.presentation.App
 import com.example.pruebas.ui.theme.PruebasTheme
-import java.time.format.DateTimeFormatter
 
 class MainActivity : ComponentActivity() {
 

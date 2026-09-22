@@ -12,7 +12,12 @@ enum class PrizeStatus {
     WINNER,     // Premiado (> 0.0 €)
     UNKNOWN     // No comprobado aún
 }
-
+data class BalanceState(
+    val ganado: String = "",
+    val gastado: String = "",
+    val balance: String = "",
+    val porcentaje: String = ""
+)
 
 data class TicketUiModel(
     val ticket: Ticket,
@@ -25,6 +30,7 @@ data class TicketUiModel(
 
 data class HomeUiState(
     val tickets: List<TicketUiModel> = emptyList(),
+    val balance: BalanceState = BalanceState(),
     val selectedTicketId: String? = null,
     val showDeleteDialog: Boolean = false,
     val deleteDialogMode: DeleteDialogMode = DeleteDialogMode.DELETE_ALL,

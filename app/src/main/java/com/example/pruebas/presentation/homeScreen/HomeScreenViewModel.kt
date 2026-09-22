@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pruebas.domain.BalanceRepo
 import com.example.pruebas.domain.LotteryDatabaseRepo
 import com.example.pruebas.domain.NetworkRepo
 import kotlinx.coroutines.Dispatchers
@@ -13,11 +14,13 @@ import kotlinx.coroutines.launch
 
 class HomeScreenViewModel(
     private val netRepo: NetworkRepo,
-    private val dbRepo: LotteryDatabaseRepo
+    private val dbRepo: LotteryDatabaseRepo,
+    private val balanceRepo: BalanceRepo
 ) : ViewModel() {
 
     var state by mutableStateOf(HomeUiState())
         private set
+
 
     init {
         viewModelScope.launch {
@@ -25,7 +28,9 @@ class HomeScreenViewModel(
                 state = state.copy(tickets = tickets.map { TicketUiMapper.toUiModel(it) })
             }
         }
+        getBalance()
     }
+
 
     fun onIntent(intent: HomeIntent) {
         when (intent) {
@@ -95,6 +100,15 @@ class HomeScreenViewModel(
                     Log.e("HomeScreenViewModel", "checkTicket failure", error)
                 }
 
+        }
+    }
+
+    private fun getBalance() {
+        viewModelScope.launch {
+            val tickets = dbRepo.getAllTickets()
+            balanceRepo.getBalance(tickets).collect { newBalance ->
+                state = state.copy(balance = newBalance)
+            }
         }
     }
 

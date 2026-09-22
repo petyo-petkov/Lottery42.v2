@@ -90,7 +90,7 @@ fun TicketUI(
                     Icon(
                         imageVector = Icons.Filled.QuestionMark,
                         contentDescription = null,
-                        tint = Color.Yellow
+                        tint = Color(0xFFFBC02D)
                     )
                 }
             }

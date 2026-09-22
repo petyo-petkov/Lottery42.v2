@@ -39,7 +39,10 @@ import com.example.pruebas.presentation.detailScreen.detailsScreens.PrimitivaDet
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ExtraDetailScreen(
-    modifier: Modifier = Modifier, model: InfoModel?, selectedTicket: Ticket?, isLoading: Boolean
+    modifier: Modifier = Modifier,
+    model: InfoModel?,
+    selectedTicket: Ticket?,
+    isLoading: Boolean
 ) {
 
     val info = model?.data?.get(0)

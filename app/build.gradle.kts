@@ -83,9 +83,9 @@ dependencies {
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.kotlinx.serialization.json)
 
-    implementation("androidx.compose.material3:material3:1.4.0")
-    implementation("androidx.compose.material3:material3-window-size-class:1.4.0")
-    implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.5.0-alpha23")
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.compose.material3.window.size.class1)
+    implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
 
     implementation(libs.androidx.compose.adaptive)
     implementation(libs.androidx.compose.adaptive.layout)
@@ -103,6 +103,11 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
     implementation(libs.koin.compose.viewmodel)
+
+    // Navigation 3
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 
 
 

@@ -10,15 +10,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.layout.AnimatedPane
-import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldRole
-import androidx.compose.material3.adaptive.navigation.BackNavigationBehavior
-import androidx.compose.material3.adaptive.navigation.NavigableListDetailPaneScaffold
-import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
 import com.example.pruebas.presentation.detailScreen.DetailScreen
 import com.example.pruebas.presentation.extraDetailScreen.ExtraDetailScreen
 import com.example.pruebas.presentation.homeScreen.DeleteDialogMode
@@ -26,30 +22,26 @@ import com.example.pruebas.presentation.homeScreen.HomeIntent
 import com.example.pruebas.presentation.homeScreen.HomeScreen
 import com.example.pruebas.presentation.homeScreen.HomeScreenViewModel
 import com.example.pruebas.presentation.homeScreen.MyFAB
-import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun App(
     modifier: Modifier = Modifier,
     homeVM: HomeScreenViewModel = koinViewModel(),
-    scannerVM: ScannerViewModel = koinViewModel()
+    scannerVM: ScannerViewModel = koinViewModel(),
 ) {
-
-    val navigator = rememberListDetailPaneScaffoldNavigator()
-    val coroutine = rememberCoroutineScope()
-
+    val backStack = rememberNavBackStack(HomeKey)
     val state = homeVM.state
+
+    val currentKey = backStack.lastOrNull()
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
         floatingActionButton = {
             AnimatedVisibility(
-                visible = navigator.currentDestination?.pane == ThreePaneScaffoldRole.Secondary,
+                visible = currentKey is HomeKey,
                 enter = fadeIn(tween(durationMillis = 100)),
                 exit = fadeOut(tween(durationMillis = 100))
-
             ) {
                 MyFAB(
                     onDeleteClick = {
@@ -64,59 +56,59 @@ fun App(
         containerColor = MaterialTheme.colorScheme.surface,
         contentWindowInsets = WindowInsets.safeDrawing
     ) { padding ->
-        NavigableListDetailPaneScaffold(
-            modifier = modifier.padding(padding),
-            navigator = navigator,
-            listPane = {
-                AnimatedPane {
-                    HomeScreen(
-                        modifier = modifier,
-                        tickets = state.tickets,
-                        onClick = { ticket ->
-                            homeVM.onIntent(HomeIntent.SelectTicket(ticket))
-                            coroutine.launch {
-                                navigator.navigateTo(pane = ThreePaneScaffoldRole.Primary)
-                            }
+        val entryProvider = entryProvider {
+            entry<HomeKey> {
+                HomeScreen(
+                    modifier = Modifier.padding(padding),
+                    tickets = state.tickets,
+                    balanceState = state.balance,
+                    onClick = { ticket ->
+                        homeVM.onIntent(HomeIntent.SelectTicket(ticket))
+                        backStack.add(DetailKey(ticket.id))
+                    }
+                )
+            }
+
+            entry<DetailKey> { key ->
+                val ticketUiModel = state.tickets.find { it.ticket.id == key.ticketId }
+                ticketUiModel?.let { uiModel ->
+                    DetailScreen(
+                        modifier = Modifier.padding(padding),
+                        ticketUiModel = uiModel,
+                        checkModel = state.checkModel,
+                        onDelete = {
+                            homeVM.onIntent(HomeIntent.SelectTicket(uiModel.ticket))
+                            homeVM.onIntent(HomeIntent.ToggleDeleteDialog(DeleteDialogMode.DELETE_SINGLE))
+                        },
+                        onCheck = {
+                            homeVM.onIntent(HomeIntent.CheckTicket(uiModel.ticket))
+                        },
+                        onInfo = {
+                            homeVM.onIntent(HomeIntent.CheckInfo(uiModel.ticket))
+                            backStack.add(ExtraDetailKey(key.ticketId))
                         }
                     )
                 }
-            },
-            detailPane = {
-                AnimatedPane {
-                    state.selectedTicketUiModel?.let { ticketUiModel ->
-                        val currentTicket = ticketUiModel.ticket
-                        DetailScreen(
-                            ticketUiModel = ticketUiModel,
-                            state = state,
-                            onDelete = {
-                                homeVM.onIntent(HomeIntent.ToggleDeleteDialog(DeleteDialogMode.DELETE_SINGLE))
-                            },
-                            onCheck = {
-                                coroutine.launch {
-                                    homeVM.onIntent(HomeIntent.CheckTicket(currentTicket))
-                                }
-                            },
-                            onInfo = {
-                                coroutine.launch {
-                                    homeVM.onIntent(HomeIntent.CheckInfo(currentTicket))
-                                    navigator.navigateTo(pane = ThreePaneScaffoldRole.Tertiary)
-                                }
-                            }
-                        )
-                    }
-                }
-            },
-            extraPane = {
-                AnimatedPane {
-                    ExtraDetailScreen(
-                        model = state.infoModel,
-                        selectedTicket = state.selectedTicket,
-                        isLoading = state.isLoadingInfo
-                    )
-                }
-            },
-            defaultBackBehavior = BackNavigationBehavior.PopUntilContentChange
+            }
 
+            entry<ExtraDetailKey> {
+                ExtraDetailScreen(
+                    modifier = Modifier.padding(padding),
+                    model = state.infoModel,
+                    selectedTicket = state.selectedTicket,
+                    isLoading = state.isLoadingInfo
+                )
+            }
+
+            entry<SettingsKey> {
+                // Destino para pantalla de ajustes u otra pantalla futura
+            }
+        }
+
+        NavDisplay(
+            backStack = backStack,
+            entryProvider = entryProvider,
+            onBack = { backStack.removeLastOrNull() }
         )
     }
 
@@ -128,9 +120,7 @@ fun App(
             } else {
                 state.selectedTicket?.let { ticket ->
                     homeVM.onIntent(HomeIntent.DeleteTicket(ticket))
-                    coroutine.launch {
-                        navigator.navigateBack()
-                    }
+                    backStack.removeLastOrNull()
                 }
             }
             homeVM.onIntent(HomeIntent.ToggleDeleteDialog())

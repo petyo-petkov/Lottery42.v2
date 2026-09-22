@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.pruebas.data.network.lotteryModels.checkModel.CheckModel
 import com.example.pruebas.data.toDisplayDate
 import com.example.pruebas.presentation.Divisor
 import com.example.pruebas.presentation.Info
@@ -46,7 +47,7 @@ import com.example.pruebas.presentation.homeScreen.TicketUiModel
 fun DetailScreen(
     modifier: Modifier = Modifier,
     ticketUiModel: TicketUiModel,
-    state: HomeUiState,
+    checkModel: CheckModel?,
     onDelete: () -> Unit,
     onCheck: () -> Unit,
     onInfo: () -> Unit
@@ -154,11 +155,11 @@ fun DetailScreen(
 
     }
 
-    if (showDialog && state.checkModel?.data != null) {
+    if (showDialog && checkModel?.data != null) {
         InfoDialog(
             onDismiss = { showDialog = false },
             showDialog = true,
-            checkdata = state.checkModel
+            checkdata = checkModel
         )
     }
 }

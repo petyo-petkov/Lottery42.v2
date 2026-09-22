@@ -40,18 +40,19 @@ class NetPruebas() {
 
     suspend fun netPruebas() : JsonObject {
 
-
         val numbers = "10,44,46,31,38,41"
         val numbers2 = "45,7,40,31,38,2"
         val reintegro = "04"
         val drawId = "1323004113"
+        val gameType = "euromillones"
+        val date = "2026-09-18"
 
         val result = client.get{
             url {
-                path("results", "primitiva", "check")
+                path("results", gameType, "date", date)           // https://api.loteriasapi.com/api/v1/results/bonoloto/date/2026-09-21
             }
-            parameter("numbers", "$numbers,$reintegro")
-            parameter("drawId", drawId)
+            //parameter("gameType", gameType)
+            //parameter("date", date)
         }
 
         println("URL: ${result.request.url}")
