@@ -76,6 +76,7 @@ fun App(
                         modifier = Modifier.padding(padding),
                         ticketUiModel = uiModel,
                         checkModel = state.checkModel,
+                        isLodingCheck = state.isLoadingCheck,
                         onDelete = {
                             homeVM.onIntent(HomeIntent.SelectTicket(uiModel.ticket))
                             homeVM.onIntent(HomeIntent.ToggleDeleteDialog(DeleteDialogMode.DELETE_SINGLE))

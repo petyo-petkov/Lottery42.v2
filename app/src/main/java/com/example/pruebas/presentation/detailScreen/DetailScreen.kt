@@ -39,7 +39,6 @@ import com.example.pruebas.presentation.detailScreen.detailsScreens.Euromillones
 import com.example.pruebas.presentation.detailScreen.detailsScreens.Gordo
 import com.example.pruebas.presentation.detailScreen.detailsScreens.LoteriaNacional
 import com.example.pruebas.presentation.detailScreen.detailsScreens.PrimitivaDetails
-import com.example.pruebas.presentation.homeScreen.HomeUiState
 import com.example.pruebas.presentation.homeScreen.TicketUiModel
 
 
@@ -48,6 +47,7 @@ fun DetailScreen(
     modifier: Modifier = Modifier,
     ticketUiModel: TicketUiModel,
     checkModel: CheckModel?,
+    isLodingCheck: Boolean,
     onDelete: () -> Unit,
     onCheck: () -> Unit,
     onInfo: () -> Unit
@@ -155,10 +155,11 @@ fun DetailScreen(
 
     }
 
-    if (showDialog && checkModel?.data != null) {
+    if (showDialog) {
         InfoDialog(
             onDismiss = { showDialog = false },
             showDialog = true,
+            isLoadingCheck = isLodingCheck,
             checkdata = checkModel
         )
     }

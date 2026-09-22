@@ -36,6 +36,7 @@ data class HomeUiState(
     val deleteDialogMode: DeleteDialogMode = DeleteDialogMode.DELETE_ALL,
     val isScanning: Boolean = false,
     val isLoadingInfo: Boolean = false,
+    val isLoadingCheck: Boolean = false,
     val checkModel: CheckModel? = null,
     val infoModel: InfoModel? = null,
 

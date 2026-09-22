@@ -68,6 +68,7 @@ class HomeScreenViewModel(
     }
 
     private fun checkTicket(ticket: com.example.pruebas.domain.Ticket) {
+        state = state.copy(isLoadingCheck = true)
         viewModelScope.launch(Dispatchers.IO) {
             var totalPrize = 0.0
             val results = netRepo.checkLottery(ticket)
@@ -77,9 +78,10 @@ class HomeScreenViewModel(
                     val amount = checkModel.data?.prize?.prizeAmount?.toDoubleOrNull() ?: 0.0
                     totalPrize += amount
 
-                    state = state.copy(checkModel = checkModel)
+                    state = state.copy(checkModel = checkModel, isLoadingCheck = false)
 
                 }.onFailure { error ->
+                    state = state.copy(isLoadingCheck = false)
                     Log.e("HomeScreenViewModel", "checkTicket failure", error)
                 }
             }

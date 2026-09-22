@@ -1,6 +1,7 @@
 package com.example.pruebas.presentation.detailScreen
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -8,7 +9,9 @@ import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.LoadingIndicator
+import androidx.compose.material3.LoadingIndicatorDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,11 +24,12 @@ import androidx.compose.ui.window.DialogProperties
 import com.example.pruebas.data.network.lotteryModels.checkModel.CheckModel
 import com.example.pruebas.presentation.Info
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun InfoDialog(
     onDismiss: () -> Unit,
     showDialog: Boolean,
+    isLoadingCheck: Boolean,
     modifier: Modifier = Modifier,
     checkdata: CheckModel?
 ) {
@@ -47,13 +51,26 @@ fun InfoDialog(
                         verticalArrangement = Arrangement.SpaceEvenly,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-
                         Info("Boleto: ${checkdata?.data?.game?.name}")
 
-                        if (prize != null) {
-                            Info("Ha Ganado: ${prize}")
+                        if (isLoadingCheck) {
+                            Box(
+                                modifier = Modifier,
+                                contentAlignment = Alignment.Center
+                            ) {
+                                LoadingIndicator(
+                                    modifier = modifier,
+                                    color = LoadingIndicatorDefaults.containedIndicatorColor,
+                                    polygons = LoadingIndicatorDefaults.IndeterminateIndicatorPolygons
+                                )
+                            }
                         } else {
-                            Info("No Premiado")
+
+                            if (prize != null) {
+                                Info("Ha Ganado: ${prize}")
+                            } else {
+                                Info("No Premiado")
+                            }
                         }
 
                         ElevatedButton(
@@ -74,6 +91,7 @@ fun InfoDialog(
 
                     }
                 }
+
 
             }
         )
