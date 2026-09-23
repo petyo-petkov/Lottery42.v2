@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             PruebasTheme {
 
-                App(modifier = Modifier)
+                App()
 
             }
         }

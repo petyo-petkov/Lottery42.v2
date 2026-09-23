@@ -26,7 +26,6 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun App(
-    modifier: Modifier = Modifier,
     homeVM: HomeScreenViewModel = koinViewModel(),
     scannerVM: ScannerViewModel = koinViewModel(),
 ) {
@@ -36,7 +35,7 @@ fun App(
     val currentKey = backStack.lastOrNull()
 
     Scaffold(
-        modifier = modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
             AnimatedVisibility(
                 visible = currentKey is HomeKey,

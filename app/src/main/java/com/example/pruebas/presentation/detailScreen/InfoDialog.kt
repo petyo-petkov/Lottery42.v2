@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.example.pruebas.data.network.lotteryModels.checkModel.CheckModel
-import com.example.pruebas.presentation.Info
+import com.example.pruebas.presentation.InfoText
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -30,7 +30,6 @@ fun InfoDialog(
     onDismiss: () -> Unit,
     showDialog: Boolean,
     isLoadingCheck: Boolean,
-    modifier: Modifier = Modifier,
     checkdata: CheckModel?
 ) {
     val prize = checkdata?.data?.prize?.formattedPrize
@@ -47,11 +46,11 @@ fun InfoDialog(
                     tonalElevation = AlertDialogDefaults.TonalElevation,
                 ) {
                     Column(
-                        modifier = modifier.padding(12.dp),
+                        modifier = Modifier.padding(12.dp),
                         verticalArrangement = Arrangement.SpaceEvenly,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Info("Boleto: ${checkdata?.data?.game?.name}")
+                        InfoText("Boleto: ${checkdata?.data?.game?.name}")
 
                         if (isLoadingCheck) {
                             Box(
@@ -59,7 +58,7 @@ fun InfoDialog(
                                 contentAlignment = Alignment.Center
                             ) {
                                 LoadingIndicator(
-                                    modifier = modifier,
+                                    modifier = Modifier,
                                     color = LoadingIndicatorDefaults.containedIndicatorColor,
                                     polygons = LoadingIndicatorDefaults.IndeterminateIndicatorPolygons
                                 )
@@ -67,15 +66,15 @@ fun InfoDialog(
                         } else {
 
                             if (prize != null) {
-                                Info("Ha Ganado: ${prize}")
+                                InfoText("Ha Ganado: ${prize}")
                             } else {
-                                Info("No Premiado")
+                                InfoText("No Premiado")
                             }
                         }
 
                         ElevatedButton(
                             onClick = { onDismiss() },
-                            modifier = modifier,
+                            modifier = Modifier,
                             shape = ButtonDefaults.elevatedShape,
                             colors = ButtonDefaults.elevatedButtonColors(
                                 containerColor = MaterialTheme.colorScheme.tertiaryContainer
@@ -83,7 +82,7 @@ fun InfoDialog(
                         ) {
                             Text(
                                 text = "Ok",
-                                modifier = modifier,
+                                modifier = Modifier,
                                 color = MaterialTheme.colorScheme.onTertiaryContainer,
                                 fontSize = 18.sp
                             )

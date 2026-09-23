@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.pruebas.domain.Ticket
 import com.example.pruebas.presentation.Divisor
-import com.example.pruebas.presentation.Info
+import com.example.pruebas.presentation.InfoText
 
 @Composable
 fun PrimitivaDetails(ticket: Ticket) {
@@ -36,7 +36,7 @@ fun PrimitivaDetails(ticket: Ticket) {
             )
         }
         Divisor()
-        Info(text = "Joker: ${ticket.joker}")
+        InfoText(text = "Joker: ${ticket.joker}")
     }
 }
 

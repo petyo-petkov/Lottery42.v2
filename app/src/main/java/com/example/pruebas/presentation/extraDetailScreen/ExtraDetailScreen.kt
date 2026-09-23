@@ -26,7 +26,7 @@ import com.example.pruebas.data.network.lotteryModels.infoModel.InfoModel
 import com.example.pruebas.data.toDisplayDate
 import com.example.pruebas.domain.Ticket
 import com.example.pruebas.presentation.Divisor
-import com.example.pruebas.presentation.Info
+import com.example.pruebas.presentation.InfoText
 import com.example.pruebas.presentation.detailScreen.detailsScreens.BonolotoDetails
 import com.example.pruebas.presentation.detailScreen.detailsScreens.EurodreamsDetails
 import com.example.pruebas.presentation.detailScreen.detailsScreens.EuromillonesDetails
@@ -56,24 +56,24 @@ fun ExtraDetailScreen(
         if (isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 LoadingIndicator(
-                    modifier = modifier,
+                    modifier = Modifier,
                     color = LoadingIndicatorDefaults.indicatorColor,
                     polygons = LoadingIndicatorDefaults.IndeterminateIndicatorPolygons
                 )
             }
         } else {
             LazyColumn(
-                modifier = modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
                 item {
-                    Info(text = info?.game?.name ?: "")
+                    InfoText(text = info?.game?.name ?: "")
                     Divisor()
-                    Info(text = info?.drawDate?.toDisplayDate() ?: "")
+                    InfoText(text = info?.drawDate?.toDisplayDate() ?: "")
                     Divisor()
-                    Info(text = "Mis Combinaciones:")
+                    InfoText(text = "Mis Combinaciones:")
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -92,9 +92,9 @@ fun ExtraDetailScreen(
                     }
                     Divisor()
 
-                    Info("Combinación ganadora:")
+                    InfoText("Combinación ganadora:")
                     Row(
-                        modifier = modifier.padding(8.dp),
+                        modifier = Modifier.padding(8.dp),
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -112,9 +112,9 @@ fun ExtraDetailScreen(
 
                     if(info?.resultData?.reintegro != null){
                         Row() {
-                            Info("Reintegro:")
+                            InfoText("Reintegro:")
                             NumberCircle(
-                                number = "${info.resultData.reintegro}",
+                                number = info.resultData.reintegro.toString(),
                                 color = MaterialTheme.colorScheme.secondaryContainer
                             )
                         }
@@ -122,23 +122,17 @@ fun ExtraDetailScreen(
                     }
                     if(info?.resultData?.complementario != null){
                         Row() {
-                            Info("Complimentario:")
+                            InfoText("Complimentario:")
                             NumberCircle(
-                                number = "${info.resultData.complementario}",
+                                number = info.resultData.complementario.toString(),
                                 color = MaterialTheme.colorScheme.tertiaryContainer
                             )
                         }
                         Divisor()
                     }
-
-
-                    Info("Jackpot:")
-                    Info(text = info?.jackpotFormatted ?: "")
-                    Divisor()
-
                 }
-                escrutinioSection((info?.prizes ?: emptyList()))
 
+                escrutinioSection((info?.prizes ?: emptyList()))
 
             }
         }

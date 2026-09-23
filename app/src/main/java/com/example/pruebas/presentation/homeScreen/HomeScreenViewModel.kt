@@ -76,7 +76,7 @@ class HomeScreenViewModel(
                 result.onSuccess { checkModel ->
                     Log.d("HomeScreenViewModel", "checkTicket success: $checkModel")
                     val amount = checkModel.data?.prize?.prizeAmount?.toDoubleOrNull() ?: 0.0
-                    totalPrize += amount
+                    totalPrize += amount / 100
 
                     state = state.copy(checkModel = checkModel, isLoadingCheck = false)
 

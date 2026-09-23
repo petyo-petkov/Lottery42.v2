@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun Info(
+fun InfoText(
     text: String?,
     style: TextStyle = MaterialTheme.typography.titleLarge,
     color: Color = MaterialTheme.colorScheme.onSurface,

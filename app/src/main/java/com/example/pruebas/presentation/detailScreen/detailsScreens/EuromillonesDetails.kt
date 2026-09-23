@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.pruebas.domain.Ticket
 import com.example.pruebas.presentation.Divisor
-import com.example.pruebas.presentation.Info
+import com.example.pruebas.presentation.InfoText
 
 @Composable
 fun EuromillonesDetails(
@@ -44,6 +44,6 @@ fun EuromillonesDetails(
             }
         )
         Divisor()
-        Info(text = "Millon: ${ticket.millon}")
+        InfoText(text = "Millon: ${ticket.millon}")
     }
 }

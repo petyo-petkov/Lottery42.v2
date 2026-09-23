@@ -17,7 +17,7 @@ import com.example.pruebas.domain.Ticket
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     tickets: List<TicketUiModel>,
     balanceState: BalanceState,
     onClick: (Ticket) -> Unit

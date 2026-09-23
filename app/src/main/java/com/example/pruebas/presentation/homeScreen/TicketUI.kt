@@ -76,11 +76,10 @@ fun TicketUI(
 
                     val prizeTextColor = when (uiModel.prizeStatus) {
                         PrizeStatus.NO_PRIZE -> MaterialTheme.colorScheme.error
-                        PrizeStatus.WINNER -> MaterialTheme.colorScheme.onPrimary
+                        PrizeStatus.WINNER -> Color(0xFF388E3C)
                         PrizeStatus.UNKNOWN -> MaterialTheme.colorScheme.onSurfaceVariant
                     }
                     Fila(
-                        //text = "${uiModel.formattedPrize} €",
                         text = "${ticket.prize} €",
                         style = MaterialTheme.typography.bodyLarge,
                         color = prizeTextColor

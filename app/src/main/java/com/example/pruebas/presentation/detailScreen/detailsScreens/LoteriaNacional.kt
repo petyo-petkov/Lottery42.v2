@@ -7,7 +7,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.pruebas.domain.Ticket
 import com.example.pruebas.presentation.Divisor
-import com.example.pruebas.presentation.Info
+import com.example.pruebas.presentation.InfoText
 
 @Composable
 fun LoteriaNacional(ticket: Ticket) {
@@ -15,10 +15,10 @@ fun LoteriaNacional(ticket: Ticket) {
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Info(text = "Número: ${ticket.numLottery}")
+        InfoText(text = "Número: ${ticket.numLottery}")
         Divisor()
-        Info(text = "Serie: ${ticket.serie}")
+        InfoText(text = "Serie: ${ticket.serie}")
         Divisor()
-        Info(text = "Fracción: ${ticket.fraccion}")
+        InfoText(text = "Fracción: ${ticket.fraccion}")
     }
 }

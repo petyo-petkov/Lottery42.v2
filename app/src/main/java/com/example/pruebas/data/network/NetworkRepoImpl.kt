@@ -27,9 +27,8 @@ class NetworkRepoImpl(private val client: HttpClient) : NetworkRepo {
     }
 
     override suspend fun checkLottery(ticket: Ticket): List<Result<CheckModel>> {
+
         val game = ticket.lotteryGame
-        
-        // Si no hay combinaciones (ej. Nacional), simulamos una lista con una entrada vacía para hacer la petición
         val combinations = ticket.numbers.ifEmpty { listOf("") }
 
         return combinations.map { combination ->

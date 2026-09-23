@@ -82,6 +82,7 @@ val networkModule = module {
                 json(Json {
                     ignoreUnknownKeys = true
                     coerceInputValues = true
+                    prettyPrint = true
                 })
             }
             defaultRequest {
