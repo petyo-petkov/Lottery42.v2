@@ -91,7 +91,7 @@ fun DetailScreen(
             Divisor()
 
             // Fecha
-            InfoText(text = ticket.drawDate.toDisplayDate())
+            InfoText(text = ticket.drawDate)
             Divisor()
 
             // #Sorteo
@@ -107,6 +107,7 @@ fun DetailScreen(
                 "eurodreams" -> EurodreamsDetails(ticket)
                 "bonoloto" -> BonolotoDetails(ticket)
                 "nacional" -> LoteriaNacional(ticket)
+                "LNAC" -> LoteriaNacional(ticket)
                 "gordo" -> {
                     Gordo(ticket)
                 }

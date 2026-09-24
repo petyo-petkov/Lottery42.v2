@@ -48,7 +48,7 @@ fun TicketUI(
         ) {
             // Date
             Fila(
-                text = ticket.drawDate.toDisplayDate(),
+                text = ticket.drawDate,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
