@@ -1,7 +1,7 @@
 package com.example.pruebas.presentation.homeScreen
 
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,8 +22,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusProperties
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons as MaterialIcons
 
 
@@ -33,6 +31,7 @@ fun MyFAB(
     onDeleteClick: () -> Unit,
     onScannerClick: () -> Unit,
 ){
+
     var expanded by rememberSaveable { mutableStateOf(false) }
     val vibrantColors = FloatingToolbarDefaults.vibrantFloatingToolbarColors()
     HorizontalFloatingToolbar(
@@ -63,6 +62,31 @@ fun MyFAB(
         },
         colors = vibrantColors,
         content = {
+            TooltipBox(
+                positionProvider =
+                    TooltipDefaults.rememberTooltipPositionProvider(
+                        TooltipAnchorPosition.Above
+                    ),
+                tooltip = {
+                    PlainTooltip(
+                        modifier =
+                            Modifier
+                    ) {
+                        Text("Localized description")
+                    }
+                },
+                state = rememberTooltipState(),
+            ) {
+                IconButton(
+                    onClick = { },
+                    Modifier.focusProperties { canFocus = expanded },
+                ) {
+                    Icon(
+                        MaterialIcons.Filled.Check,
+                        contentDescription = "Localized description",
+                    )
+                }
+            }
             TooltipBox(
                 positionProvider =
                     TooltipDefaults.rememberTooltipPositionProvider(

@@ -13,17 +13,18 @@ fun parse(rawData: String): Map<String, String> {
         if (pair.startsWith(".")) {
             "bets" to betsString
         } else {
-            val (key, value) = pair.split("=", limit = 2)
+            val [key, value] = pair.split("=", limit = 2)
             key to value
         }
     }
 }
 
-fun createTicket(rawData: String): Ticket {
+fun ticketFromQrCode(rawData: String): Ticket {
     val pairs = parse(rawData)
 
     val id = pairs["A"] ?: ""
-    val cdc = pairs["S"]?.take(3) ?: ""
+    val numeroSorteo = pairs["S"]?.take(3) ?: ""
+    val cdc = pairs["A"]?.take(5) ?: ""
     val gameStatus = pairs["W"] ?: ""
     val office = pairs["T"] ?: ""
     val date = pairs["S"]?.substringBefore(":")?.takeLast(7)?.toStoreDate() ?: ""
@@ -94,9 +95,10 @@ fun createTicket(rawData: String): Ticket {
 
     return Ticket(
         id = id,
-        drawId = "${id.take(5)}${game.apiId}$cdc",
+        drawId = "${cdc}${game.apiId}$numeroSorteo",
         gameType = game.type,
         name = game.name,
+        numeroSorteo = numeroSorteo,
         cdc = cdc,
         drawDate = date,
         gameStatus = gameStatus,
@@ -110,7 +112,7 @@ fun createTicket(rawData: String): Ticket {
         stars = stars,
         millon = millon,
         dreams = dreams,
-        numLottery = numLottery,
+        numDecimo = numLottery,
         serie = serie,
         fraccion = fraccion,
         clave = claves

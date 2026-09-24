@@ -22,9 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.pruebas.data.network.lotteryModels.infoModel.InfoLotteryPrize
-import com.example.pruebas.data.network.lotteryModels.infoModel.InfoModel
 import com.example.pruebas.data.toDisplayDate
-import com.example.pruebas.domain.Ticket
 import com.example.pruebas.presentation.Divisor
 import com.example.pruebas.presentation.InfoText
 import com.example.pruebas.presentation.detailScreen.detailsScreens.BonolotoDetails
@@ -35,24 +33,23 @@ import com.example.pruebas.presentation.detailScreen.detailsScreens.LoteriaNacio
 import com.example.pruebas.presentation.detailScreen.detailsScreens.NumberCircle
 import com.example.pruebas.presentation.detailScreen.detailsScreens.PrimitivaDetails
 
-
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ExtraDetailScreen(
     modifier: Modifier = Modifier,
-    model: InfoModel?,
-    selectedTicket: Ticket?,
-    isLoading: Boolean
+    state: ExtraDetailUiState
 ) {
+    val model = state.infoModel
+    val selectedTicket = state.selectedTicket
+    val isLoading = state.isLoadingInfo
 
-    val info = model?.data?.get(0)
+    val info = model?.data?.getOrNull(0)
 
     OutlinedCard(
         modifier = modifier
             .fillMaxSize()
             .padding(8.dp),
-
-        ) {
+    ) {
         if (isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 LoadingIndicator(
@@ -67,7 +64,6 @@ fun ExtraDetailScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 item {
                     InfoText(text = info?.game?.name ?: "")
                     Divisor()
@@ -103,15 +99,12 @@ fun ExtraDetailScreen(
                                 number = numero.toString(),
                                 color = MaterialTheme.colorScheme.primaryContainer
                             )
-
                         }
-
                     }
                     Divisor()
 
-
-                    if(info?.resultData?.reintegro != null){
-                        Row() {
+                    if (info?.resultData?.reintegro != null) {
+                        Row {
                             InfoText("Reintegro:")
                             NumberCircle(
                                 number = info.resultData.reintegro.toString(),
@@ -120,8 +113,8 @@ fun ExtraDetailScreen(
                         }
                         Divisor()
                     }
-                    if(info?.resultData?.complementario != null){
-                        Row() {
+                    if (info?.resultData?.complementario != null) {
+                        Row {
                             InfoText("Complimentario:")
                             NumberCircle(
                                 number = info.resultData.complementario.toString(),
@@ -132,14 +125,11 @@ fun ExtraDetailScreen(
                     }
                 }
 
-                escrutinioSection((info?.prizes ?: emptyList()))
-
+                escrutinioSection(info?.prizes ?: emptyList())
             }
         }
     }
-
 }
-
 
 private fun LazyListScope.escrutinioSection(prize: List<InfoLotteryPrize?>) {
     item {
@@ -199,4 +189,3 @@ private fun LazyListScope.escrutinioSection(prize: List<InfoLotteryPrize?>) {
         }
     }
 }
-

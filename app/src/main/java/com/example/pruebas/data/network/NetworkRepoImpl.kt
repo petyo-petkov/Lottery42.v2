@@ -1,5 +1,8 @@
 package com.example.pruebas.data.network
 
+import android.webkit.WebView
+import com.example.pruebas.data.network.lotteryModels.LNAC.ProximosLNAC
+import com.example.pruebas.data.network.lotteryModels.LNAC.UltimosLNAC
 import com.example.pruebas.data.network.lotteryModels.checkModel.CheckModel
 import com.example.pruebas.data.network.lotteryModels.infoModel.InfoModel
 import com.example.pruebas.domain.LotteryGame
@@ -10,8 +13,10 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.http.path
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
 
-class NetworkRepoImpl(private val client: HttpClient) : NetworkRepo {
+class NetworkRepoImpl(private val client: HttpClient, private val webView: WebView) : NetworkRepo {
 
     override suspend fun getInfo(ticket: Ticket): Result<InfoModel> {
         return try {
@@ -37,7 +42,7 @@ class NetworkRepoImpl(private val client: HttpClient) : NetworkRepo {
                     url {
                         path("results", ticket.gameType, "check")
                     }
-                    
+
                     if (ticket.drawId.isNotEmpty()) {
                         parameter("drawId", ticket.drawId)
                     }
@@ -60,7 +65,7 @@ class NetworkRepoImpl(private val client: HttpClient) : NetworkRepo {
                             parameter("extraNumbers", ticket.dreams?.joinToString(","))
                         }
                         is LotteryGame.Nacional -> {
-                            parameter("numbers", ticket.numLottery)
+                            parameter("numbers", ticket.numDecimo)
                         }
                         else -> {}
                     }
@@ -71,4 +76,49 @@ class NetworkRepoImpl(private val client: HttpClient) : NetworkRepo {
             }
         }
     }
+
+    override suspend fun getInfoAllGames(): List<JsonObject> {
+
+        val rawString = fetchData(
+            webView = webView,
+            url = FUTURE_ALL_GAMES,
+            fetchFun = ::getRawString
+        )
+        return jsonConfig().decodeFromString(rawString)
+    }
+
+    override suspend fun getInfoProximosLNAC(): List<ProximosLNAC> {
+
+        val rawString = fetchData(
+            webView = webView,
+            url = FUTURE_LNAC_GAMES,
+            fetchFun = ::getRawString
+        )
+        return jsonConfig().decodeFromString(rawString)
+
+    }
+
+    override suspend fun getInfoUltimosLNAC(): List<UltimosLNAC> {
+        val rawString = fetchData(
+            webView = webView,
+            url = GET_ULTIMOS_CELEBRADOS_LNAC,
+            fetchFun = ::getRawString
+        )
+        return jsonConfig().decodeFromString(rawString)
+    }
+
+
 }
+
+private fun jsonConfig(): Json {
+    return Json {
+        coerceInputValues = true
+        ignoreUnknownKeys = true
+        isLenient = true
+        allowSpecialFloatingPointValues = true
+        prettyPrint = true
+        useArrayPolymorphism = true
+        allowStructuredMapKeys = true
+    }
+}
+

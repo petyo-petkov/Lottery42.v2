@@ -6,14 +6,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pruebas.data.createTicket
+import com.example.pruebas.data.ticketFromBarCode
+import com.example.pruebas.data.ticketFromQrCode
 import com.example.pruebas.domain.LotteryDatabaseRepo
+import com.example.pruebas.domain.NetworkRepo
 import com.example.pruebas.domain.ScannerRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ScannerViewModel(
     private val scannerRepo: ScannerRepo,
+    private val networkRepo: NetworkRepo,
     private val dbRepo: LotteryDatabaseRepo
 ) : ViewModel() {
 
@@ -33,13 +36,24 @@ class ScannerViewModel(
                 if (!data.isNullOrBlank()) {
                     Log.d("startScanning", data)
                     try {
-                        val ticket = createTicket(data)
-                        dbRepo.createTicket(ticket)
-                        Log.d("startScanning", "Ticket guardado: $ticket")
+                        if (data.length > 20) {
+                            val qrTicket = ticketFromQrCode(data)
+                            dbRepo.createTicket(qrTicket)
+                            Log.d("startScanning", "Ticket QR: $qrTicket")
+                        } else if (data.length == 20) {
+                            val barcodeTicket = ticketFromBarCode(data, networkRepo)
+                            dbRepo.createTicket(barcodeTicket)
+                            ticketFromBarCode(data, networkRepo)
+                            Log.d("startScanning", "Ticket BarCode: $barcodeTicket")
+                        } else {
+                            state = state.copy(error = "Error al crear el ticket")
+                        }
+
                         state = state.copy(isScanning = false)
                     } catch (e: Exception) {
                         Log.e("startScanning", "Error procesando boleto", e)
-                        state = state.copy(isScanning = false, error = "Error al procesar el boleto")
+                        state =
+                            state.copy(isScanning = false, error = "Error al procesar el boleto")
                     }
                 } else {
                     state = state.copy(isScanning = false)

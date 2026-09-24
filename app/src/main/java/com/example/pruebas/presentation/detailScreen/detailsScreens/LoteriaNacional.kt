@@ -15,7 +15,7 @@ fun LoteriaNacional(ticket: Ticket) {
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        InfoText(text = "Número: ${ticket.numLottery}")
+        InfoText(text = "Número: ${ticket.numDecimo}")
         Divisor()
         InfoText(text = "Serie: ${ticket.serie}")
         Divisor()

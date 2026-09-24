@@ -2,6 +2,7 @@ package com.example.pruebas.presentation.detailScreen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,20 +16,21 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LoadingIndicator
+import androidx.compose.material3.LoadingIndicatorDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.pruebas.data.network.lotteryModels.checkModel.CheckModel
 import com.example.pruebas.data.toDisplayDate
 import com.example.pruebas.presentation.Divisor
 import com.example.pruebas.presentation.InfoText
@@ -38,32 +40,36 @@ import com.example.pruebas.presentation.detailScreen.detailsScreens.Euromillones
 import com.example.pruebas.presentation.detailScreen.detailsScreens.Gordo
 import com.example.pruebas.presentation.detailScreen.detailsScreens.LoteriaNacional
 import com.example.pruebas.presentation.detailScreen.detailsScreens.PrimitivaDetails
-import com.example.pruebas.presentation.homeScreen.TicketUiModel
 
-
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun DetailScreen(
-    modifier: Modifier,
-    ticketUiModel: TicketUiModel,
-    checkModel: CheckModel?,
-    isLodingCheck: Boolean,
+    modifier: Modifier = Modifier,
+    state: DetailUiState,
+    onIntent: (DetailIntent) -> Unit,
     onDelete: () -> Unit,
-    onCheck: () -> Unit,
     onInfo: () -> Unit
 ) {
+    val ticketUiModel = state.ticketUiModel
+    if (ticketUiModel == null) {
+        Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            LoadingIndicator(
+                color = LoadingIndicatorDefaults.indicatorColor,
+                polygons = LoadingIndicatorDefaults.IndeterminateIndicatorPolygons
+            )
+        }
+        return
+    }
+
     val buttonTexts = listOf("Borrar", "Comprobar", "Info")
-    val buttonIcons =
-        listOf(Icons.Outlined.Delete, Icons.Outlined.Check, Icons.Outlined.Info)
+    val buttonIcons = listOf(Icons.Outlined.Delete, Icons.Outlined.Check, Icons.Outlined.Info)
     var selectedItemIndex by remember { mutableIntStateOf(1) }
 
     val ticket = ticketUiModel.ticket
     val lotteryColor = Color(ticketUiModel.lotteryColorHex)
 
-    var showDialog by remember { mutableStateOf(false) }
-
     OutlinedCard(
-        modifier = modifier
-            .padding(6.dp),
+        modifier = modifier.padding(6.dp),
         colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
         border = BorderStroke(color = lotteryColor, width = 1.dp)
     ) {
@@ -89,7 +95,7 @@ fun DetailScreen(
             Divisor()
 
             // #Sorteo
-            InfoText(text = "Sorteo: ${ticket.cdc}")
+            InfoText(text = "Sorteo: ${ticket.numeroSorteo}")
             Divisor()
             if (ticket.gameType != "nacional")
                 InfoText(text = "Apuestas:")
@@ -136,8 +142,7 @@ fun DetailScreen(
                         onClick = {
                             if (index == 0) onDelete()
                             if (index == 1) {
-                                onCheck()
-                                showDialog = true
+                                onIntent(DetailIntent.CheckTicket)
                             }
                             if (index == 2) onInfo()
                             selectedItemIndex = index
@@ -145,25 +150,19 @@ fun DetailScreen(
                         label = label,
                         icon = {
                             Icon(imageVector = buttonIcons[index], contentDescription = "")
-                        },
-
-                        )
-
+                        }
+                    )
                 }
             }
-
-
         }
-
     }
 
-    if (showDialog) {
+    if (state.showCheckDialog) {
         InfoDialog(
-            onDismiss = { showDialog = false },
+            onDismiss = { onIntent(DetailIntent.ToggleCheckDialog) },
             showDialog = true,
-            isLoadingCheck = isLodingCheck,
-            checkdata = checkModel
+            isLoadingCheck = state.isLoadingCheck,
+            checkdata = state.checkModel
         )
     }
 }
-

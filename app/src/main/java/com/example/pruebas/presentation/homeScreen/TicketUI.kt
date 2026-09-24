@@ -1,6 +1,5 @@
 package com.example.pruebas.presentation.homeScreen
 
-import android.graphics.drawable.Icon
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

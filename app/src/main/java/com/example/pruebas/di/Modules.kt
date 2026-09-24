@@ -1,6 +1,8 @@
 package com.example.pruebas.di
 
 import android.app.Application
+import android.view.View
+import android.webkit.WebView
 import androidx.room3.Room
 import com.example.pruebas.BuildConfig
 import com.example.pruebas.data.BalanceRepoImpl
@@ -13,6 +15,8 @@ import com.example.pruebas.domain.LotteryDatabaseRepo
 import com.example.pruebas.domain.NetworkRepo
 import com.example.pruebas.domain.ScannerRepo
 import com.example.pruebas.presentation.ScannerViewModel
+import com.example.pruebas.presentation.detailScreen.DetailViewModel
+import com.example.pruebas.presentation.extraDetailScreen.ExtraDetailViewModel
 import com.example.pruebas.presentation.homeScreen.HomeScreenViewModel
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanner
@@ -52,6 +56,8 @@ val scannerModule: Module = module {
 val viewModelModule = module {
     viewModelOf(::HomeScreenViewModel)
     viewModelOf(::ScannerViewModel)
+    viewModelOf(::DetailViewModel)
+    viewModelOf(::ExtraDetailViewModel)
 }
 
 val repositoryModule = module {
@@ -92,4 +98,16 @@ val networkModule = module {
             }
         }
     }
+
+    single {
+        WebView(get()).apply {
+            settings.javaScriptEnabled = true
+            settings.domStorageEnabled = true
+            settings.loadsImagesAutomatically = false
+            settings.blockNetworkImage = true
+            visibility = View.INVISIBLE
+        }
+    }
+
+
 }

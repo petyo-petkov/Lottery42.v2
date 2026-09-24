@@ -11,13 +11,17 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import com.example.pruebas.presentation.detailScreen.DetailIntent
 import com.example.pruebas.presentation.detailScreen.DetailScreen
+import com.example.pruebas.presentation.detailScreen.DetailViewModel
+import com.example.pruebas.presentation.extraDetailScreen.ExtraDetailIntent
 import com.example.pruebas.presentation.extraDetailScreen.ExtraDetailScreen
-import com.example.pruebas.presentation.homeScreen.DeleteDialogMode
+import com.example.pruebas.presentation.extraDetailScreen.ExtraDetailViewModel
 import com.example.pruebas.presentation.homeScreen.HomeIntent
 import com.example.pruebas.presentation.homeScreen.HomeScreen
 import com.example.pruebas.presentation.homeScreen.HomeScreenViewModel
@@ -28,6 +32,8 @@ import org.koin.compose.viewmodel.koinViewModel
 fun App(
     homeVM: HomeScreenViewModel = koinViewModel(),
     scannerVM: ScannerViewModel = koinViewModel(),
+    detailVM: DetailViewModel = koinViewModel(),
+    extraDetailVM: ExtraDetailViewModel = koinViewModel()
 ) {
     val backStack = rememberNavBackStack(HomeKey)
     val state = homeVM.state
@@ -44,7 +50,7 @@ fun App(
             ) {
                 MyFAB(
                     onDeleteClick = {
-                        homeVM.onIntent(HomeIntent.ToggleDeleteDialog(DeleteDialogMode.DELETE_ALL))
+                        homeVM.onIntent(HomeIntent.ToggleDeleteDialog)
                     },
                     onScannerClick = {
                         scannerVM.onIntent(ScannerIntent.StartScan)
@@ -52,7 +58,7 @@ fun App(
                 )
             }
         },
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = MaterialTheme.colorScheme.background,
         contentWindowInsets = WindowInsets.safeDrawing
     ) { padding ->
         val entryProvider = entryProvider {
@@ -62,41 +68,46 @@ fun App(
                     tickets = state.tickets,
                     balanceState = state.balance,
                     onClick = { ticket ->
-                        homeVM.onIntent(HomeIntent.SelectTicket(ticket))
                         backStack.add(DetailKey(ticket.id))
                     }
                 )
             }
 
             entry<DetailKey> { key ->
-                val ticketUiModel = state.tickets.find { it.ticket.id == key.ticketId }
-                ticketUiModel?.let { uiModel ->
-                    DetailScreen(
-                        modifier = Modifier.padding(padding),
-                        ticketUiModel = uiModel,
-                        checkModel = state.checkModel,
-                        isLodingCheck = state.isLoadingCheck,
-                        onDelete = {
-                            homeVM.onIntent(HomeIntent.SelectTicket(uiModel.ticket))
-                            homeVM.onIntent(HomeIntent.ToggleDeleteDialog(DeleteDialogMode.DELETE_SINGLE))
-                        },
-                        onCheck = {
-                            homeVM.onIntent(HomeIntent.CheckTicket(uiModel.ticket))
-                        },
-                        onInfo = {
-                            homeVM.onIntent(HomeIntent.CheckInfo(uiModel.ticket))
-                            backStack.add(ExtraDetailKey(key.ticketId))
-                        }
-                    )
+                LaunchedEffect(key.ticketId) {
+                    detailVM.onIntent(DetailIntent.LoadTicket(key.ticketId))
                 }
+                DetailScreen(
+                    modifier = Modifier.padding(padding),
+                    state = detailVM.state,
+                    onIntent = detailVM::onIntent,
+                    onDelete = {
+                        detailVM.onIntent(DetailIntent.ToggleDeleteDialog)
+                    },
+                    onInfo = {
+                        backStack.add(ExtraDetailKey(key.ticketId))
+                    }
+                )
+
+                DeleteDialog(
+                    onDismiss = { detailVM.onIntent(DetailIntent.ToggleDeleteDialog) },
+                    onConfirm = {
+                        detailVM.onIntent(DetailIntent.DeleteTicket)
+                        detailVM.onIntent(DetailIntent.ToggleDeleteDialog)
+                        backStack.removeLastOrNull()
+                    },
+                    show = detailVM.state.showDeleteDialog,
+                    mensaje = "Borrar este Boleto?"
+                )
             }
 
-            entry<ExtraDetailKey> {
+            entry<ExtraDetailKey> { key ->
+                LaunchedEffect(key.ticketId) {
+                    extraDetailVM.onIntent(ExtraDetailIntent.LoadInfo(key.ticketId))
+                }
                 ExtraDetailScreen(
                     modifier = Modifier.padding(padding),
-                    model = state.infoModel,
-                    selectedTicket = state.selectedTicket,
-                    isLoading = state.isLoadingInfo
+                    state = extraDetailVM.state
                 )
             }
 
@@ -113,22 +124,12 @@ fun App(
     }
 
     DeleteDialog(
-        onDismiss = { homeVM.onIntent(HomeIntent.ToggleDeleteDialog()) },
+        onDismiss = { homeVM.onIntent(HomeIntent.ToggleDeleteDialog) },
         onConfirm = {
-            if (state.deleteDialogMode == DeleteDialogMode.DELETE_ALL) {
-                homeVM.onIntent(HomeIntent.DeleteAll)
-            } else {
-                state.selectedTicket?.let { ticket ->
-                    homeVM.onIntent(HomeIntent.DeleteTicket(ticket))
-                    backStack.removeLastOrNull()
-                }
-            }
-            homeVM.onIntent(HomeIntent.ToggleDeleteDialog())
+            homeVM.onIntent(HomeIntent.DeleteAll)
+            homeVM.onIntent(HomeIntent.ToggleDeleteDialog)
         },
         show = state.showDeleteDialog,
-        mensaje = if (state.deleteDialogMode == DeleteDialogMode.DELETE_ALL)
-            "Borrar todos los Boletos?"
-        else
-            "Borrar este Boleto?"
+        mensaje = "Borrar todos los Boletos?"
     )
 }

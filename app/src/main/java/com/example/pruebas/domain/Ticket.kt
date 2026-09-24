@@ -8,7 +8,8 @@ data class Ticket(
     val drawId: String = "",                           // A = 1321902020120280171942842258210547
     val gameType: String = "",                         // P = 2
     val name: String = "",
-    val cdc: String = "",
+    val numeroSorteo: String = "",                     // S = 251......
+    val cdc: String = "",                              // A = 13219....
     val drawDate: String = "",                         // S = 251 08SEP26 :1
     val gameStatus: String = "",                       // W = 0
     val office: String = "",                           // T = 50050-1
@@ -30,7 +31,7 @@ data class Ticket(
     val dreams: List<String>? = emptyList(),
 
     // Loteria Nacional
-    val numLottery: String? = null,                     // N = 81030
+    val numDecimo: String? = null,                     // N = 81030
     val serie: String? = null,                          // SE = 5
     val fraccion: String? = null,                       // F = 1
 
@@ -46,6 +47,7 @@ data class Ticket(
             drawId = drawId,
             gameType = gameType,
             name = name,
+            numeroSorteo = numeroSorteo,
             cdc = cdc,
             drawDate = drawDate,
             gameStatus = gameStatus,
@@ -60,7 +62,7 @@ data class Ticket(
             stars = stars,
             millon = millon,
             dreams = dreams,
-            numLottery = numLottery,
+            numDecimo = numDecimo,
             serie = serie,
             fraccion = fraccion,
             clave = clave,

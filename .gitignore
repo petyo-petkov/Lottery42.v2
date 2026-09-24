@@ -12,4 +12,7 @@
 /captures
 .externalNativeBuild
 .cxx
-local.properties
+
+# Ignored private configuration / network files
+URLS.kt
+NetPruebas.kt
