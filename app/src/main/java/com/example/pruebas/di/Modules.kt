@@ -10,10 +10,12 @@ import com.example.pruebas.data.ScannerRepoImpl
 import com.example.pruebas.data.db.AppDatabase
 import com.example.pruebas.data.db.LotteryDatabaseRepoImpl
 import com.example.pruebas.data.network.NetworkRepoImpl
+import com.example.pruebas.data.network.WebViewRepoImpl
 import com.example.pruebas.domain.BalanceRepo
 import com.example.pruebas.domain.LotteryDatabaseRepo
 import com.example.pruebas.domain.NetworkRepo
 import com.example.pruebas.domain.ScannerRepo
+import com.example.pruebas.domain.WebViewRepo
 import com.example.pruebas.presentation.ScannerViewModel
 import com.example.pruebas.presentation.detailScreen.DetailViewModel
 import com.example.pruebas.presentation.extraDetailScreen.ExtraDetailViewModel
@@ -64,6 +66,7 @@ val repositoryModule = module {
     singleOf(::LotteryDatabaseRepoImpl) bind LotteryDatabaseRepo::class
     singleOf(::NetworkRepoImpl) bind NetworkRepo::class
     singleOf(::BalanceRepoImpl) bind BalanceRepo::class
+    singleOf(::WebViewRepoImpl) bind WebViewRepo::class
 }
 
 val databaseModule = module {

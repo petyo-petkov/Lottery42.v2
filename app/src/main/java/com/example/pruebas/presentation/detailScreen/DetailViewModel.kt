@@ -8,12 +8,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pruebas.domain.LotteryDatabaseRepo
 import com.example.pruebas.domain.NetworkRepo
+import com.example.pruebas.domain.WebViewRepo
 import com.example.pruebas.presentation.homeScreen.TicketUiMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class DetailViewModel(
     private val netRepo: NetworkRepo,
+    private val webViewRepo: WebViewRepo,
     private val dbRepo: LotteryDatabaseRepo
 ) : ViewModel() {
 
@@ -50,6 +52,7 @@ class DetailViewModel(
         state = state.copy(isLoadingCheck = true, showCheckDialog = true)
         viewModelScope.launch(Dispatchers.IO) {
             var totalPrize = 0.0
+            if (ticket.gameType == "LNAC") webViewRepo.getPremioLNAC(ticket.numDecimo!!, ticket.drawId)
             val results = netRepo.checkLottery(ticket)
             results.forEach { result ->
                 result.onSuccess { checkModel ->

@@ -3,8 +3,9 @@ package com.example.pruebas.data
 import android.util.Log
 import com.example.pruebas.domain.NetworkRepo
 import com.example.pruebas.domain.Ticket
+import com.example.pruebas.domain.WebViewRepo
 
-suspend fun ticketFromBarCode(rawData: String, networkRepo: NetworkRepo) : Ticket {
+suspend fun ticketFromBarCode(rawData: String, webViewRepo: WebViewRepo) : Ticket {
 
     val id = rawData.take(10)
     val gameType = "LNAC"
@@ -13,7 +14,7 @@ suspend fun ticketFromBarCode(rawData: String, networkRepo: NetworkRepo) : Ticke
     val numDecimo: String = rawData.substring(11..15)
 
     val fetchData = try {
-        networkRepo.getInfoLNAC(numSorteo, gameType)
+        webViewRepo.getInfoLNAC(numSorteo, gameType)
     }catch (e: Exception){
         Log.e("NETWORK ERROR","Error al obtener info del sorteo, en crear desde barcode:  ${e.message}")
         null

@@ -1,44 +1,50 @@
 package com.example.pruebas.presentation.homeScreen
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun BalanceCard(
-   balanceState: BalanceState
+    balanceState: BalanceState,
+    modifier: Modifier = Modifier,
 ) {
-    OutlinedCard (
-        modifier = Modifier
-            .padding(12.dp)
+    ElevatedCard (
+        modifier = modifier
             .fillMaxWidth()
-            .size(130.dp)
-        ,
-        shape = CardDefaults.outlinedShape,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            .padding(12.dp)
+            .graphicsLayer(
+                alpha = 0.85f,
+                shape = RoundedCornerShape(20.dp),
+                clip = true
+            ),
+
+        elevation = CardDefaults.elevatedCardElevation(
+            defaultElevation = 16.dp
         ),
-        border = BorderStroke(
-            width = 1.dp,
-            color = MaterialTheme.colorScheme.onSurface
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
         ),
+
+
     ) {
         Row(
-            modifier = Modifier.fillMaxSize().padding(top = 32.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp, bottom = 12.dp),
             verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
@@ -51,16 +57,14 @@ fun BalanceCard(
                 nombre = "BALANCE",
                 color = Color(0xFF1976D2),
                 data = balanceState.balance,
-                extraData = balanceState.porcentaje
+                extraData = balanceState.porcentaje,
             )
             BalanceData(
                 nombre = "GANADO",
                 color = Color(0xFF388E3C),
                 data = balanceState.ganado,
             )
-
         }
-
     }
 }
 
@@ -69,11 +73,9 @@ fun BalanceData(
     nombre: String,
     data: String,
     color: Color,
-    extraData: String? = null
+    extraData: String? = null,
 ) {
-
     Column(
-        modifier = Modifier,
         verticalArrangement = Arrangement.spacedBy(6.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -85,16 +87,12 @@ fun BalanceData(
         Text(
             text = data,
             style = MaterialTheme.typography.headlineSmall
-
         )
         if (extraData != null) {
             Text(
                 text = extraData,
                 style = MaterialTheme.typography.bodyLarge,
-
-                )
+            )
         }
-
     }
-
 }
