@@ -13,8 +13,8 @@ interface LotteryDAO {
     @Query("SELECT * FROM tickets ORDER BY drawDate DESC")
     fun getAllTickets(): Flow<List<TicketEntity>>
 
-    @Query("SELECT * FROM tickets WHERE drawId = :drawId")
-    fun getByDrawId(drawId: String): Flow<TicketEntity?>
+    @Query("SELECT * FROM tickets WHERE id = :id")
+    fun getById(id: String): Flow<TicketEntity?>
 
     @Insert
     suspend fun insert(lotteryEntity: TicketEntity)

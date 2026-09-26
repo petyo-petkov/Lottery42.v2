@@ -91,7 +91,7 @@ fun DetailScreen(
             Divisor()
 
             // Fecha
-            InfoText(text = ticket.drawDate)
+            InfoText(text = ticket.drawDate.toDisplayDate())
             Divisor()
 
             // #Sorteo

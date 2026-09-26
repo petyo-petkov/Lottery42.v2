@@ -30,6 +30,7 @@ class DetailViewModel(
             is DetailIntent.ToggleDeleteDialog -> {
                 state = state.copy(showDeleteDialog = !state.showDeleteDialog)
             }
+
             is DetailIntent.ToggleCheckDialog -> {
                 state = state.copy(showCheckDialog = !state.showCheckDialog)
             }
@@ -38,21 +39,23 @@ class DetailViewModel(
 
     private fun loadTicket(ticketId: String) {
         viewModelScope.launch {
-            dbRepo.getAllTickets().collect { tickets ->
-                val ticket = tickets.find { it.id == ticketId }
-                if (ticket != null) {
-                    state = state.copy(ticketUiModel = TicketUiMapper.toUiModel(ticket))
-                }
+            dbRepo.getTicketById(ticketId).collect { ticket ->
+                state = state.copy(ticketUiModel = TicketUiMapper.toUiModel(ticket))
             }
+
         }
     }
+
 
     private fun checkTicket() {
         val ticket = state.ticketUiModel?.ticket ?: return
         state = state.copy(isLoadingCheck = true, showCheckDialog = true)
         viewModelScope.launch(Dispatchers.IO) {
             var totalPrize = 0.0
-            if (ticket.gameType == "LNAC") webViewRepo.getPremioLNAC(ticket.numDecimo!!, ticket.drawId)
+            if (ticket.gameType == "LNAC") webViewRepo.getPremioLNAC(
+                ticket.numDecimo!!,
+                ticket.drawId
+            )
             val results = netRepo.checkLottery(ticket)
             results.forEach { result ->
                 result.onSuccess { checkModel ->

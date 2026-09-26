@@ -28,7 +28,7 @@ fun BalanceCard(
             .padding(12.dp)
             .graphicsLayer(
                 alpha = 0.85f,
-                shape = RoundedCornerShape(20.dp),
+                shape = MaterialTheme.shapes.large,
                 clip = true
             ),
 

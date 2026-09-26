@@ -48,8 +48,8 @@ fun App(
         floatingActionButton = {
             AnimatedVisibility(
                 visible = currentKey is HomeKey,
-                enter = fadeIn(tween(durationMillis = 100)),
-                exit = fadeOut(tween(durationMillis = 100))
+                enter = fadeIn(),
+                exit = fadeOut()
             ) {
                 MyFAB(
                     onDeleteClick = {

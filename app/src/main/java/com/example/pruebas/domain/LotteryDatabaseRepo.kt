@@ -6,6 +6,8 @@ interface LotteryDatabaseRepo {
 
     fun getAllTickets(): Flow<List<Ticket>>
 
+    fun getTicketById(id: String) : Flow<Ticket>
+
     suspend fun createTicket(ticket: Ticket)
 
     suspend fun updateTicket(ticket: Ticket)
@@ -14,7 +16,6 @@ interface LotteryDatabaseRepo {
 
     suspend fun deleteAll()
 
-    fun getTicketByDrawId(drawId: String): Flow<Ticket?>
 }
 
 

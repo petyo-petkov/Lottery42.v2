@@ -37,6 +37,7 @@ fun TicketUI(
         modifier = Modifier
             .fillMaxWidth()
             .height(uiModel.height.dp),
+        shape = MaterialTheme.shapes.large,
         colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
         border = BorderStroke(color = lotteryColor, width = 1.dp)
     ) {
@@ -48,7 +49,7 @@ fun TicketUI(
         ) {
             // Date
             Fila(
-                text = ticket.drawDate,
+                text = ticket.drawDate.toDisplayDate(),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )

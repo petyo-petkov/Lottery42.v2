@@ -15,6 +15,11 @@ class LotteryDatabaseRepoImpl(
         }
     }
 
+    override fun getTicketById(id: String): Flow<Ticket> {
+        val ticket = dao.getById(id)
+        return ticket.map { it?.toDomain() ?: Ticket() }
+    }
+
     override suspend fun createTicket(ticket: Ticket) {
         dao.insert(ticket.toEntity())
     }
@@ -31,7 +36,4 @@ class LotteryDatabaseRepoImpl(
         dao.deleteAll()
     }
 
-    override fun getTicketByDrawId(drawId: String): Flow<Ticket?> {
-        return dao.getByDrawId(drawId).map { it?.toDomain() }
-    }
 }

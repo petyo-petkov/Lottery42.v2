@@ -60,8 +60,8 @@ fun ExtraDetailScreen(
             }
         } else {
             LazyColumn(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 item {
@@ -81,6 +81,7 @@ fun ExtraDetailScreen(
                             "eurodreams" -> EurodreamsDetails(selectedTicket)
                             "bonoloto" -> BonolotoDetails(selectedTicket)
                             "nacional" -> LoteriaNacional(selectedTicket)
+                            "LNAC" -> LoteriaNacional(selectedTicket)
                             "gordo" -> {
                                 Gordo(selectedTicket)
                             }

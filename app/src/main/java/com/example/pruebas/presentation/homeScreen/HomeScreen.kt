@@ -25,9 +25,7 @@ fun HomeScreen(
     onClick: (Ticket) -> Unit
 ) {
     Box(
-        modifier = modifier
-            .background(Color.Transparent)
-            .fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         LazyVerticalStaggeredGrid(
             columns = StaggeredGridCells.Fixed(2),
