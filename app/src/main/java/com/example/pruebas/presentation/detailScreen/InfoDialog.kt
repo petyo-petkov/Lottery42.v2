@@ -42,9 +42,11 @@ fun InfoDialog(
             content = {
                 Surface(
                     modifier = Modifier.size(width = 300.dp, height = 220.dp),
-                    shape = MaterialTheme.shapes.extraLarge,
+                    shape = MaterialTheme.shapes.medium,
                     tonalElevation = AlertDialogDefaults.TonalElevation,
                 ) {
+
+
                     Column(
                         modifier = Modifier.padding(12.dp),
                         verticalArrangement = Arrangement.SpaceEvenly,
@@ -53,6 +55,7 @@ fun InfoDialog(
                         InfoText("Boleto: ${checkdata?.data?.game?.name}")
 
                         if (isLoadingCheck) {
+
                             Box(
                                 modifier = Modifier,
                                 contentAlignment = Alignment.Center

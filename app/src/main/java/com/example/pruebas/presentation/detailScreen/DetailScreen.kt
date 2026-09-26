@@ -1,6 +1,5 @@
 package com.example.pruebas.presentation.detailScreen
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -71,7 +70,6 @@ fun DetailScreen(
     OutlinedCard(
         modifier = modifier.padding(6.dp),
         colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
-        border = BorderStroke(color = lotteryColor, width = 1.dp)
     ) {
         Column(
             modifier = Modifier
@@ -158,7 +156,7 @@ fun DetailScreen(
         }
     }
 
-    if (state.showCheckDialog) {
+    if (state.showCheckDialog && state.checkModel != null) {
         InfoDialog(
             onDismiss = { onIntent(DetailIntent.ToggleCheckDialog) },
             showDialog = true,

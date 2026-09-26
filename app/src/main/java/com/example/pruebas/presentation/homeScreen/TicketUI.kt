@@ -1,6 +1,5 @@
 package com.example.pruebas.presentation.homeScreen
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,9 +10,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,14 +31,15 @@ fun TicketUI(
     val ticket = uiModel.ticket
     val lotteryColor = Color(uiModel.lotteryColorHex)
 
-    OutlinedCard(
+    ElevatedCard(
         onClick = { onClick(ticket) },
         modifier = Modifier
             .fillMaxWidth()
             .height(uiModel.height.dp),
+
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
-        border = BorderStroke(color = lotteryColor, width = 1.dp)
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 6.dp)
     ) {
 
         Column(
@@ -50,13 +50,13 @@ fun TicketUI(
             // Date
             Fila(
                 text = ticket.drawDate.toDisplayDate(),
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
             // Game
             Fila(
                 text = ticket.name,
-                style = MaterialTheme.typography.headlineSmallEmphasized,
+                style = MaterialTheme.typography.titleLargeEmphasized,
                 color = lotteryColor
             )
 
@@ -68,7 +68,7 @@ fun TicketUI(
                 //Price
                 Fila(
                     text = "${ticket.betPrice} €",
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 //Prize
@@ -81,7 +81,7 @@ fun TicketUI(
                     }
                     Fila(
                         text = "${ticket.prize} €",
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.bodyMedium,
                         color = prizeTextColor
 
                     )
