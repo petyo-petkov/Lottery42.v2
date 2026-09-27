@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.example.pruebas.data.network.lotteryModels.checkModel.CheckModel
+import com.example.pruebas.data.toDisplayDate
 import com.example.pruebas.presentation.InfoText
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -34,7 +35,7 @@ fun InfoDialog(
 ) {
     val prize = checkdata?.data?.prize?.formattedPrize
 
-    if (showDialog) {
+    if (showDialog && checkdata != null) {
 
         BasicAlertDialog(
             onDismissRequest = { onDismiss() },
@@ -52,7 +53,15 @@ fun InfoDialog(
                         verticalArrangement = Arrangement.SpaceEvenly,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        InfoText("Boleto: ${checkdata?.data?.game?.name}")
+                        Column(
+                            modifier = Modifier,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            InfoText("Boleto: ${checkdata.data?.game?.name}")
+                            InfoText("de: ${checkdata.data?.drawDate?.toDisplayDate()}")
+                        }
+
 
                         if (isLoadingCheck) {
 

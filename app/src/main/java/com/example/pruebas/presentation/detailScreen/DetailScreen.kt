@@ -50,6 +50,7 @@ fun DetailScreen(
     onInfo: () -> Unit
 ) {
     val ticketUiModel = state.ticketUiModel
+
     if (ticketUiModel == null) {
         Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             LoadingIndicator(
@@ -83,7 +84,7 @@ fun DetailScreen(
             // Tipo Loteria
             InfoText(
                 text = ticket.name,
-                style = MaterialTheme.typography.displayMedium,
+                style = MaterialTheme.typography.displaySmall,
                 color = lotteryColor
             )
             Divisor()
@@ -156,7 +157,7 @@ fun DetailScreen(
         }
     }
 
-    if (state.showCheckDialog && state.checkModel != null) {
+    if (state.showCheckDialog) {
         InfoDialog(
             onDismiss = { onIntent(DetailIntent.ToggleCheckDialog) },
             showDialog = true,

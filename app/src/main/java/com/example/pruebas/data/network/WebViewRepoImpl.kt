@@ -59,10 +59,6 @@ class WebViewRepoImpl(private val webView: WebView) : WebViewRepo {
 
 
     private suspend fun findSorteo(url: String, gameID: String, numSorteo: String): JsonObject? {
-        fun JsonObject.getString(key: String): String? {
-            val element = this[key]
-            return if (element is JsonPrimitive) element.contentOrNull else null
-        }
 
         return getInfoAllGames(url).find { item ->
             val gameIdMatches = item.getString("game_id")?.equals(gameID, ignoreCase = true) == true
@@ -82,10 +78,7 @@ class WebViewRepoImpl(private val webView: WebView) : WebViewRepo {
     }
 
     private fun getMissingInfoL(info: JsonObject): InfoLNAC {
-        fun JsonObject.getString(key: String): String? {
-            val element = this[key]
-            return if (element is JsonPrimitive) element.contentOrNull else null
-        }
+
         return InfoLNAC(
             fecha = info.getString("fecha") ?: info.getString("fecha_sorteo") ?: "",
             precio = info.getString("precio") ?: info.getString("precioDecimo") ?: "0.0",
@@ -93,6 +86,11 @@ class WebViewRepoImpl(private val webView: WebView) : WebViewRepo {
             apertura = info.getString("apertura") ?: info.getString("fecha_sorteo") ?: "",
             cierre = info.getString("cierre") ?: info.getString("fecha_sorteo") ?: ""
         )
+    }
+
+    private fun JsonObject.getString(key: String): String? {
+        val element = this[key]
+        return if (element is JsonPrimitive) element.contentOrNull else null
     }
 
 

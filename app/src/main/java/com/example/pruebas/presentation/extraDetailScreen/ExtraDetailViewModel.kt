@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pruebas.domain.LotteryDatabaseRepo
 import com.example.pruebas.domain.NetworkRepo
+import com.example.pruebas.presentation.homeScreen.TicketUiMapper
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 class ExtraDetailViewModel(
@@ -31,21 +31,32 @@ class ExtraDetailViewModel(
 
         viewModelScope.launch(Dispatchers.IO) {
             state = state.copy(isLoadingInfo = true, error = null)
-            val tickets = dbRepo.getAllTickets().firstOrNull() ?: emptyList()
-            val ticket = tickets.find { it.id == ticketId }
-            if (ticket != null) {
-                state = state.copy(selectedTicket = ticket)
-                val result = netRepo.getInfo(ticket)
-                result.onSuccess { infoModel ->
-                    state = state.copy(infoModel = infoModel, isLoadingInfo = false)
-                    Log.d("ExtraDetailViewModel", "loadInfo success: $infoModel")
-                }.onFailure { error ->
-                    state = state.copy(isLoadingInfo = false, error = error.message)
-                    Log.e("ExtraDetailViewModel", "loadInfo failure", error)
+//            val tickets = dbRepo.getAllTickets().firstOrNull() ?: emptyList()
+//            val ticket = tickets.find { it.id == ticketId }
+            dbRepo.getTicketById(ticketId).collect { ticket ->
+                val uiModel = TicketUiMapper.toUiModel(ticket)
+                state = state.copy(
+                    selectedTicket = ticket,
+                    ticketUiModel = uiModel
+                )
+
+                if (ticket.gameType == "nacional"){
+                    val result = netRepo.getInfoNacional(ticket.numeroSorteo)
+                    state = state.copy(infoNacional = result, isLoadingInfo = false)
+
+                }else {
+                    val result = netRepo.getInfo(ticket)
+                    result.onSuccess { infoModel ->
+                        state = state.copy(infoModel = infoModel, isLoadingInfo = false)
+                        Log.d("ExtraDetailViewModel", "loadInfo success: $infoModel")
+                    }.onFailure { error ->
+                        state = state.copy(isLoadingInfo = false, error = error.message)
+                        Log.e("ExtraDetailViewModel", "loadInfo failure", error)
+                    }
                 }
-            } else {
-                state = state.copy(isLoadingInfo = false, error = "Boleto no encontrado")
+
             }
+
         }
     }
 }

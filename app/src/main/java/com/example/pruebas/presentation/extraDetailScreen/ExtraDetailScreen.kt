@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.pruebas.data.network.lotteryModels.infoModel.InfoLotteryPrize
@@ -39,11 +40,11 @@ fun ExtraDetailScreen(
     modifier: Modifier = Modifier,
     state: ExtraDetailUiState
 ) {
-    val model = state.infoModel
     val selectedTicket = state.selectedTicket
+    val infoModel = state.infoModel
     val isLoading = state.isLoadingInfo
 
-    val info = model?.data?.getOrNull(0)
+    val info = infoModel?.data?.getOrNull(0)
 
     OutlinedCard(
         modifier = modifier
@@ -59,74 +60,85 @@ fun ExtraDetailScreen(
                 )
             }
         } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                item {
-                    InfoText(text = info?.game?.name ?: "")
-                    Divisor()
-                    InfoText(text = info?.drawDate?.toDisplayDate() ?: "")
-                    Divisor()
-                    InfoText(text = "Mis Combinaciones:")
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        when (selectedTicket?.gameType) {
-                            "euromillones" -> EuromillonesDetails(selectedTicket)
-                            "primitiva" -> PrimitivaDetails(selectedTicket)
-                            "eurodreams" -> EurodreamsDetails(selectedTicket)
-                            "bonoloto" -> BonolotoDetails(selectedTicket)
-                            "nacional" -> LoteriaNacional(selectedTicket)
-                            "LNAC" -> LoteriaNacional(selectedTicket)
-                            "gordo" -> {
-                                Gordo(selectedTicket)
+            if (state.selectedTicket?.gameType == "nacional") {
+                ExtraInfoNcional(state)
+            } else {
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    item {
+                        InfoText(
+                            text = info?.game?.name ?: "",
+                            style = MaterialTheme.typography.displaySmall,
+                            color = Color(state.ticketUiModel?.lotteryColorHex ?: 1L)
+                        )
+                        Divisor()
+                        InfoText(text = info?.drawDate?.toDisplayDate() ?: "")
+                        Divisor()
+                        InfoText(text = "Mis Combinaciones:")
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            when (selectedTicket?.gameType) {
+                                "euromillones" -> EuromillonesDetails(selectedTicket)
+                                "primitiva" -> PrimitivaDetails(selectedTicket)
+                                "eurodreams" -> EurodreamsDetails(selectedTicket)
+                                "bonoloto" -> BonolotoDetails(selectedTicket)
+//                                "nacional" -> LoteriaNacional(selectedTicket)
+//                                "LNAC" -> LoteriaNacional(selectedTicket)
+                                "gordo" -> {
+                                    Gordo(selectedTicket)
+                                }
                             }
                         }
-                    }
-                    Divisor()
+                        Divisor()
 
-                    InfoText("Combinación ganadora:")
-                    Row(
-                        modifier = Modifier.padding(8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        info?.combination?.forEach { numero ->
-                            NumberCircle(
-                                number = numero.toString(),
-                                color = MaterialTheme.colorScheme.primaryContainer
-                            )
-                        }
-                    }
-                    Divisor()
-
-                    if (info?.resultData?.reintegro != null) {
-                        Row {
-                            InfoText("Reintegro:")
-                            NumberCircle(
-                                number = info.resultData.reintegro.toString(),
-                                color = MaterialTheme.colorScheme.secondaryContainer
-                            )
+                        InfoText("Combinación ganadora:")
+                        Row(
+                            modifier = Modifier.padding(8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            info?.combination?.forEach { numero ->
+                                NumberCircle(
+                                    number = numero.toString(),
+                                    color = MaterialTheme.colorScheme.primaryContainer
+                                )
+                            }
                         }
                         Divisor()
-                    }
-                    if (info?.resultData?.complementario != null) {
-                        Row {
-                            InfoText("Complimentario:")
-                            NumberCircle(
-                                number = info.resultData.complementario.toString(),
-                                color = MaterialTheme.colorScheme.tertiaryContainer
-                            )
+
+                        if (info?.resultData?.reintegro != null) {
+                            Row {
+                                InfoText("Reintegro:")
+                                NumberCircle(
+                                    number = info.resultData.reintegro.toString(),
+                                    color = MaterialTheme.colorScheme.secondaryContainer
+                                )
+                            }
+                            Divisor()
                         }
-                        Divisor()
+                        if (info?.resultData?.complementario != null) {
+                            Row {
+                                InfoText("Complimentario:")
+                                NumberCircle(
+                                    number = info.resultData.complementario.toString(),
+                                    color = MaterialTheme.colorScheme.tertiaryContainer
+                                )
+                            }
+                            Divisor()
+                        }
                     }
+
+                    escrutinioSection(info?.prizes ?: emptyList())
                 }
-
-                escrutinioSection(info?.prizes ?: emptyList())
             }
         }
     }
