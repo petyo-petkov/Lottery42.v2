@@ -30,7 +30,6 @@ import com.example.pruebas.presentation.detailScreen.detailsScreens.BonolotoDeta
 import com.example.pruebas.presentation.detailScreen.detailsScreens.EurodreamsDetails
 import com.example.pruebas.presentation.detailScreen.detailsScreens.EuromillonesDetails
 import com.example.pruebas.presentation.detailScreen.detailsScreens.Gordo
-import com.example.pruebas.presentation.detailScreen.detailsScreens.LoteriaNacional
 import com.example.pruebas.presentation.detailScreen.detailsScreens.NumberCircle
 import com.example.pruebas.presentation.detailScreen.detailsScreens.PrimitivaDetails
 

@@ -45,7 +45,6 @@ class DetailViewModel(
         if (state.ticketUiModel?.ticket?.id == ticketId && loadTicketJob?.isActive == true) {
             return
         }
-
         loadTicketJob?.cancel()
         state = DetailUiState()
 

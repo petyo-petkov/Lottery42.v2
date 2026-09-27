@@ -65,24 +65,27 @@ fun ExtraInfoNcional(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
+            //Primer Premio
             Column(
                 modifier = Modifier,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                InfoText("Primer premio:")
+
+                InfoText(info?.resultData?.primerPremio?.literalPremio?.es)
                 InfoText(info?.resultData?.primerPremio?.decimo)
             }
+            //Segundo Premio
             Column(
                 modifier = Modifier,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                InfoText("Segundo premio:")
+                InfoText(info?.resultData?.segundoPremio?.literalPremio?.es)
                 InfoText(info?.resultData?.segundoPremio?.decimo)
 
             }
         }
         Divisor()
-        if (!info?.resultData?.tercerosPremios.isNullOrEmpty() ||
+        if (info?.resultData?.tercerosPremios?.isNotEmpty() == true ||
             info?.resultData?.cuartosPremios?.isNotEmpty() == true ||
             info?.resultData?.quintosPremios?.isNotEmpty() == true
         ) {
@@ -95,12 +98,20 @@ fun ExtraInfoNcional(
                     modifier = Modifier,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    InfoText("Tercer premios:")
+                    InfoText("Terceros premios:")
                     info.resultData.tercerosPremios?.forEach { premio ->
                         if (!premio.decimo.isNullOrEmpty())
                             InfoText(premio.decimo)
                     }
                 }
+
+            }
+            Divisor()
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
                 Column(
                     modifier = Modifier,
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -111,6 +122,13 @@ fun ExtraInfoNcional(
                     }
 
                 }
+            }
+            Divisor()
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
                 Column(
                     modifier = Modifier,
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -125,24 +143,26 @@ fun ExtraInfoNcional(
             Divisor()
         }
 
-        Column(
+    }
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        InfoText("Reintegros:")
+        Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            InfoText("Reintegros:")
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                info?.resultData?.reintegros?.forEach { reintegro ->
-                    if (!reintegro.decimo.isNullOrEmpty())
-                        NumberCircle(reintegro.decimo)
-                }
+            info?.resultData?.reintegros?.forEach { reintegro ->
+                if (!reintegro.decimo.isNullOrEmpty())
+                    NumberCircle(reintegro.decimo)
             }
         }
-
     }
 
 }
+
+

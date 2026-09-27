@@ -8,8 +8,6 @@ import kotlinx.serialization.Serializable
 data class InfoNacional(
     @SerialName("data")
     val `data`: List<Data?>? = null,
-    @SerialName("meta")
-    val meta: Meta?,
     @SerialName("success")
     val success: Boolean?,
     @SerialName("timestamp")

@@ -10,8 +10,6 @@ data class Data(
     val combination: List<Int?>?,
     @SerialName("dayOfWeek")
     val dayOfWeek: String?,
-//    @SerialName("documents")
-//    val documents: List<String>? = null,
     @SerialName("drawDate")
     val drawDate: String?,
     @SerialName("drawId")
@@ -20,8 +18,6 @@ data class Data(
     val game: Game?,
     @SerialName("id")
     val id: String?,
-//    @SerialName("officialListUrl")
-//    val officialListUrl: String? = null,
     @SerialName("prizes")
     val prizes: List<Prize>?,
     @SerialName("resultData")
