@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class DetailViewModel(
-    private val netRepo: NetworkRepo,
+   // private val netRepo: NetworkRepo,
     private val webViewRepo: WebViewRepo,
     private val dbRepo: LotteryDatabaseRepo
 ) : ViewModel() {
@@ -79,10 +79,22 @@ class DetailViewModel(
                         val cents = premioCentimosStr.toDoubleOrNull() ?: 0.0
                         totalPrize += cents / 100.0
                     } catch (e: Exception) {
+                        hasError = true
                         Log.e("DetailViewModel", "Error en LNAC check", e)
                     }
+                }else {
+                    try {
+                        val premioSentimos = webViewRepo.getPremios(ticket)
+                        val centimos = premioSentimos.toDoubleOrNull() ?: 0.0
+                        totalPrize += centimos.div(100)
+                    } catch (e: Exception) {
+                        hasError = true
+                        Log.e("DetailVireModel", "Error premio check", e)
+                    }
+
                 }
 
+                /*
                 // B) Comprobar combinaciones vía API
                 val results = netRepo.checkLottery(ticket)
                 results.forEach { result ->
@@ -98,6 +110,8 @@ class DetailViewModel(
                     }
                 }
 
+                 */
+
                 // C) Guardar en BD solo si la comprobación fue exitosa
                 if (!hasError) {
                     val updatedTicket = ticket.copy(
@@ -111,7 +125,7 @@ class DetailViewModel(
             // 3. Actualizar la UI en el Hilo Principal al finalizar
             state = state.copy(
                 isLoadingCheck = false,
-                checkModel = lastCheckModel,
+                //checkModel = lastCheckModel,
                 error = if (hasError) lastErrorMessage else null
             )
         }

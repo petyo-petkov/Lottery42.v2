@@ -2,6 +2,9 @@ package com.example.pruebas.data.network
 
 import android.util.Log
 import android.webkit.WebView
+import com.example.pruebas.data.network.urlsGetPremio.urlPremioBONO
+import com.example.pruebas.data.network.urlsGetPremio.urlPremioLAPR
+import com.example.pruebas.domain.Ticket
 import com.example.pruebas.domain.WebViewRepo
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -19,7 +22,7 @@ class WebViewRepoImpl(private val webView: WebView) : WebViewRepo {
         )
         return jsonConfig().decodeFromString(rawString)
     }
-
+    /*
     override suspend fun getInfoLNAC(numSorteo: String, gameId: String): InfoLNAC {
         val urlProximos = GET_PROXIMOS_LNAC
         val urlUltimos = GET_ULTIMOS_CELEBRADOS_LNAC
@@ -42,22 +45,44 @@ class WebViewRepoImpl(private val webView: WebView) : WebViewRepo {
         }
     }
 
-    override suspend fun getPremioLNAC(numDecimo: String, idSorteo: String): String {
+    */
 
+    override suspend fun getPremios(ticket: Ticket): String {
+        val url = when (ticket.gameType) {
+            "primitiva" -> urlPremioLAPR(ticket)
+            "bonoloto" -> urlPremioBONO(ticket)
+//            "euromillones" -> urlPremioEMIL(boleto)
+//            "gordo" -> urlPremioELGR(boleto)
+//            "eurodreams" -> urlPremioEDMS(boleto)
+//            "nacional" -> urlPremioLNAC(boleto)
+            else -> ""
+        }
+        val gameId = when(ticket.gameType) {
+            "bonoloto" -> "BONO"
+            "primitiva" -> "LAPR"
+            "euromillones" -> "EMIL"
+            "eurodreams" -> "EDMS"
+            "nacional" -> "LNAC"
+            "gordo" -> "ELGR"
+            else -> ""
+        }
+        Log.i("URL", url)
+        val premio = fetchData(webView, url) { getPremio(gameId) }
+        return premio
+    }
+
+    override suspend fun getPremioLNAC(numDecimo: String, idSorteo: String): String {
         fun JsonObject.getString(key: String): String? {
             val element = this[key]
             return if (element is JsonPrimitive) element.contentOrNull else null
         }
-
         val url = urlPremioLNACPorNumero(numeroLoteria = numDecimo, idSorteo = idSorteo)
-
         val data = getInfoAllGames(url)
-
         return data[0].getString("premioEnCentimos") ?: "0.2"
-
     }
 
 
+    /*
     private suspend fun findSorteo(url: String, gameID: String, numSorteo: String): JsonObject? {
 
         return getInfoAllGames(url).find { item ->
@@ -87,6 +112,8 @@ class WebViewRepoImpl(private val webView: WebView) : WebViewRepo {
             cierre = info.getString("cierre") ?: info.getString("fecha_sorteo") ?: ""
         )
     }
+
+     */
 
     private fun JsonObject.getString(key: String): String? {
         val element = this[key]
