@@ -25,9 +25,7 @@ class NetworkRepoImpl(private val client: HttpClient) : NetworkRepo {
     }
 
     override suspend fun getInfoNacional(numSorteo: String): InfoNacional {
-
         val response = client.get("results/nacional").body<InfoNacional>()
-
         val sorteo = response.data?.find {
             it?.drawId?.takeLast(3) == numSorteo
         }

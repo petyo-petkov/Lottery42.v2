@@ -1,5 +1,6 @@
 package com.example.pruebas.presentation.homeScreen
 
+import androidx.compose.ui.unit.Dp
 import com.example.pruebas.domain.Ticket
 
 enum class PrizeStatus {
@@ -18,6 +19,7 @@ data class BalanceState(
 data class TicketUiModel(
     val ticket: Ticket,
     val height: Int,
+    val elevation: Dp,
     val lotteryColorHex: Long,
     val prizeStatus: PrizeStatus,
     val formattedPrize: String,

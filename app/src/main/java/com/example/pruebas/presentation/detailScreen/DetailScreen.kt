@@ -162,7 +162,7 @@ fun DetailScreen(
             onDismiss = { onIntent(DetailIntent.ToggleCheckDialog) },
             showDialog = true,
             isLoadingCheck = state.isLoadingCheck,
-            checkdata = state.checkModel
+            ticket = ticket,
         )
     }
 }

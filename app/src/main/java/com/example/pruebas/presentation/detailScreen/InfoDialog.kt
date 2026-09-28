@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.example.pruebas.data.network.lotteryModels.checkModel.CheckModel
 import com.example.pruebas.data.toDisplayDate
+import com.example.pruebas.domain.Ticket
 import com.example.pruebas.presentation.InfoText
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -31,11 +32,13 @@ fun InfoDialog(
     onDismiss: () -> Unit,
     showDialog: Boolean,
     isLoadingCheck: Boolean,
-    checkdata: CheckModel?
+    ticket: Ticket,
 ) {
-    val prize = checkdata?.data?.prize?.formattedPrize
+    val prize = ticket.prize
+    val name = ticket.name
+    val date = ticket.drawDate.toDisplayDate()
 
-    if (showDialog && checkdata != null) {
+    if (showDialog) {
 
         BasicAlertDialog(
             onDismissRequest = { onDismiss() },
@@ -58,8 +61,8 @@ fun InfoDialog(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
-                            InfoText("Boleto: ${checkdata.data?.game?.name}")
-                            InfoText("de: ${checkdata.data?.drawDate?.toDisplayDate()}")
+                            InfoText("Boleto: $name")
+                            InfoText("de: $date")
                         }
 
 
@@ -77,8 +80,8 @@ fun InfoDialog(
                             }
                         } else {
 
-                            if (prize != null) {
-                                InfoText("Ha Ganado: ${prize}")
+                            if (prize != "0.0") {
+                                InfoText("Ha Ganado: $prize €")
                             } else {
                                 InfoText("No Premiado")
                             }
