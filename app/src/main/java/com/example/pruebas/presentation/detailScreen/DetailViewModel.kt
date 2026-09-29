@@ -69,6 +69,7 @@ class DetailViewModel(
 
             // 2. Ejecutar tareas pesadas (Red / DB) en Dispatchers.IO
             withContext(Dispatchers.IO) {
+
                 // A) Si es Lotería Nacional (LNAC), obtener su premio
                 if (ticket.gameType == "nacional" && !ticket.numDecimo.isNullOrEmpty()) {
                     try {

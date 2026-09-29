@@ -3,10 +3,12 @@ package com.example.pruebas.data.network
 import android.util.Log
 import android.webkit.WebView
 import com.example.pruebas.data.network.urlsGetPremio.urlPremioBONO
+import com.example.pruebas.data.network.urlsGetPremio.urlPremioEDMS
+import com.example.pruebas.data.network.urlsGetPremio.urlPremioELGR
+import com.example.pruebas.data.network.urlsGetPremio.urlPremioEMIL
 import com.example.pruebas.data.network.urlsGetPremio.urlPremioLAPR
 import com.example.pruebas.domain.Ticket
 import com.example.pruebas.domain.WebViewRepo
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -22,39 +24,15 @@ class WebViewRepoImpl(private val webView: WebView) : WebViewRepo {
         )
         return jsonConfig().decodeFromString(rawString)
     }
-    /*
-    override suspend fun getInfoLNAC(numSorteo: String, gameId: String): InfoLNAC {
-        val urlProximos = GET_PROXIMOS_LNAC
-        val urlUltimos = GET_ULTIMOS_CELEBRADOS_LNAC
 
-        val proximos = findSorteo(urlProximos, gameId, numSorteo)
-        val ultimos = findSorteo(urlUltimos, gameId, numSorteo)
-
-        Log.i("proximos", proximos.toString())
-        Log.i("ultimos", ultimos.toString())
-
-        return try {
-            when {
-                !ultimos.isNullOrEmpty() -> getMissingInfoL(ultimos)
-                !proximos.isNullOrEmpty() -> getMissingInfoL(proximos)
-                else -> InfoLNAC()
-            }
-        } catch (e: Exception) {
-            Log.e("ERROR getInfoSorteo", e.message.toString())
-            InfoLNAC()
-        }
-    }
-
-    */
 
     override suspend fun getPremios(ticket: Ticket): String {
         val url = when (ticket.gameType) {
             "primitiva" -> urlPremioLAPR(ticket)
             "bonoloto" -> urlPremioBONO(ticket)
-//            "euromillones" -> urlPremioEMIL(boleto)
-//            "gordo" -> urlPremioELGR(boleto)
-//            "eurodreams" -> urlPremioEDMS(boleto)
-//            "nacional" -> urlPremioLNAC(boleto)
+            "euromillones" -> urlPremioEMIL(ticket)
+            "eurodreams" -> urlPremioEDMS(ticket)
+            "gordo" -> urlPremioELGR(ticket)
             else -> ""
         }
         val gameId = when(ticket.gameType) {
@@ -62,7 +40,6 @@ class WebViewRepoImpl(private val webView: WebView) : WebViewRepo {
             "primitiva" -> "LAPR"
             "euromillones" -> "EMIL"
             "eurodreams" -> "EDMS"
-            "nacional" -> "LNAC"
             "gordo" -> "ELGR"
             else -> ""
         }
@@ -80,58 +57,12 @@ class WebViewRepoImpl(private val webView: WebView) : WebViewRepo {
         val data = getInfoAllGames(url)
         return data[0].getString("premioEnCentimos") ?: "0.2"
     }
-
-
-    /*
-    private suspend fun findSorteo(url: String, gameID: String, numSorteo: String): JsonObject? {
-
-        return getInfoAllGames(url).find { item ->
-            val gameIdMatches = item.getString("game_id")?.equals(gameID, ignoreCase = true) == true
-            if (!gameIdMatches) return@find false
-
-            val idSorteo = item.getString("id_sorteo") ?: ""
-            val numSorteoField = item.getString("num_sorteo") ?: ""
-            val cdc = item.getString("cdc") ?: ""
-
-            val numSorteoInt = numSorteo.toIntOrNull()
-
-            numSorteoField == numSorteo ||
-                    cdc == numSorteo ||
-                    (idSorteo.length >= 3 && idSorteo.takeLast(3) == numSorteo) ||
-                    (numSorteoInt != null && (numSorteoField.toIntOrNull() == numSorteoInt || cdc.toIntOrNull() == numSorteoInt))
-        }
-    }
-
-    private fun getMissingInfoL(info: JsonObject): InfoLNAC {
-
-        return InfoLNAC(
-            fecha = info.getString("fecha") ?: info.getString("fecha_sorteo") ?: "",
-            precio = info.getString("precio") ?: info.getString("precioDecimo") ?: "0.0",
-            idSorteo = info.getString("id_sorteo") ?: "",
-            apertura = info.getString("apertura") ?: info.getString("fecha_sorteo") ?: "",
-            cierre = info.getString("cierre") ?: info.getString("fecha_sorteo") ?: ""
-        )
-    }
-
-     */
-
     private fun JsonObject.getString(key: String): String? {
         val element = this[key]
         return if (element is JsonPrimitive) element.contentOrNull else null
     }
 
-
 }
-
-@Serializable
-data class InfoLNAC(
-    val precio: String? = null,
-    val idSorteo: String? = "",
-    val fecha: String? = "",
-    val apertura: String? = "",
-    val cierre: String? = ""
-)
-
 
 private fun jsonConfig(): Json {
     return Json {

@@ -62,7 +62,7 @@ fun InfoDialog(
                             verticalArrangement = Arrangement.Center
                         ) {
                             InfoText("Boleto: $name")
-                            InfoText("de: $date")
+                            InfoText(date)
                         }
 
 
