@@ -97,9 +97,9 @@ fun DetailScreen(
             InfoText(text = "Sorteo: ${ticket.numeroSorteo}")
             Divisor()
             if (ticket.gameType != "nacional")
-                InfoText(text = "Apuestas:")
+                InfoText(text = "Combinaciones:")
 
-            // Extra Info
+            // Info
             when (ticket.gameType) {
                 "euromillones" -> EuromillonesDetails(ticket)
                 "primitiva" -> PrimitivaDetails(ticket)
@@ -107,9 +107,7 @@ fun DetailScreen(
                 "bonoloto" -> BonolotoDetails(ticket)
                 "nacional" -> LoteriaNacional(ticket)
                 "LNAC" -> LoteriaNacional(ticket)
-                "gordo" -> {
-                    Gordo(ticket)
-                }
+                "gordo" -> { Gordo(ticket) }
             }
             Divisor()
 

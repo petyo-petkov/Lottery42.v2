@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.pruebas.presentation.InfoText
 
 @Composable
 fun NumberRow(
@@ -27,16 +28,16 @@ fun NumberRow(
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(6.dp)
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         bets.forEachIndexed { index, bet ->
             val numbers = bet.split(",")
-
             Row(
                 modifier = Modifier,
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                InfoText("${index + 1}:", style = MaterialTheme.typography.titleLarge)
                 numbers.forEach {
                     NumberCircle(
                         number = it,
@@ -56,7 +57,7 @@ fun NumberCircle(
     textColor: Color = MaterialTheme.colorScheme.onPrimaryContainer
 ) {
     Box(
-        modifier = Modifier.padding(0.dp)
+        modifier = Modifier
             .size(38.dp)
             .clip(CircleShape)
             .background(color),

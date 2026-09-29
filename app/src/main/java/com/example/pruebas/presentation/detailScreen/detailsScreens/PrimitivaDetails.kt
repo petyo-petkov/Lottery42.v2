@@ -19,10 +19,11 @@ fun PrimitivaDetails(ticket: Ticket) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(6.dp)
+        verticalArrangement = Arrangement.Center
     ) {
         NumberRow(bets = ticket.numbers)
         Divisor()
+
         Row(
             modifier = Modifier,
             horizontalArrangement = Arrangement.Center,

@@ -1,6 +1,5 @@
 package com.example.pruebas.presentation.extraDetailScreen
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,7 +25,6 @@ fun ExtraInfoNcional(
     state: ExtraDetailUiState
 ) {
     val info = state.infoNacional?.data?.lastOrNull()
-    Log.i("INFO", info.toString())
     val ticket = state.selectedTicket
     val uiModel = state.ticketUiModel
 
