@@ -38,7 +38,7 @@ fun TicketUI(
             .height(uiModel.height.dp),
 
         shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+        colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = uiModel.elevation)
     ) {
 
@@ -68,7 +68,7 @@ fun TicketUI(
                 //Price
                 Fila(
                     text = "${ticket.betPrice} €",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 //Prize
@@ -81,7 +81,7 @@ fun TicketUI(
                     }
                     Fila(
                         text = "${ticket.prize} €",
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.bodyLarge,
                         color = prizeTextColor
 
                     )

@@ -3,13 +3,11 @@ package com.example.pruebas.presentation.detailScreen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Info
@@ -107,26 +105,21 @@ fun DetailScreen(
                 "bonoloto" -> BonolotoDetails(ticket)
                 "nacional" -> LoteriaNacional(ticket)
                 "LNAC" -> LoteriaNacional(ticket)
-                "gordo" -> { Gordo(ticket) }
+                "gordo" -> {
+                    Gordo(ticket)
+                }
             }
             Divisor()
 
             // Premio
-            Row(
+            Column(
                 modifier = Modifier,
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                InfoText(
-                    text = "\uD83C\uDFC6  ${(ticket.prize.toDoubleOrNull() ?: 0.0)} €"
+                InfoText(text = "Premio:")
+                if (!ticket.isChecked) InfoText("Sin comprobar") else InfoText(
+                    text = "${(ticket.prize.toDoubleOrNull() ?: 0.1)} €"
                 )
-                if (ticket.isChecked) {
-                    Icon(
-                        Icons.Filled.Check,
-                        contentDescription = null,
-                        tint = Color(0xFF43A047)
-                    )
-                }
             }
             Divisor()
 
