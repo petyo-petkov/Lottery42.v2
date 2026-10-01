@@ -17,7 +17,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class DetailViewModel(
-   // private val netRepo: NetworkRepo,
+    ticketId: String,
+    // private val netRepo: NetworkRepo,
     private val webViewRepo: WebViewRepo,
     private val dbRepo: LotteryDatabaseRepo
 ) : ViewModel() {
@@ -26,6 +27,10 @@ class DetailViewModel(
         private set
 
     private var loadTicketJob: Job? = null
+
+    init {
+        loadTicket(ticketId)
+    }
 
     fun onIntent(intent: DetailIntent) {
         when (intent) {

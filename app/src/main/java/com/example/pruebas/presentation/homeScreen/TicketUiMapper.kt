@@ -42,6 +42,7 @@ object TicketUiMapper {
             prize > 8.0 -> 16.dp
             prize > 3.0 -> 12.dp
             prize > 1.0 -> 6.dp
+            prize > 0.0 -> 4.dp
             else -> 2.dp
         }
     }

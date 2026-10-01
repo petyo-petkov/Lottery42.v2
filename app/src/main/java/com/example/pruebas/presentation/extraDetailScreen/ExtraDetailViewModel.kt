@@ -13,12 +13,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ExtraDetailViewModel(
+    ticketId: String,
     private val netRepo: NetworkRepo,
     private val dbRepo: LotteryDatabaseRepo
 ) : ViewModel() {
 
     var state by mutableStateOf(ExtraDetailUiState())
         private set
+
+    init {
+        loadInfo(ticketId)
+    }
 
     fun onIntent(intent: ExtraDetailIntent) {
         when (intent) {

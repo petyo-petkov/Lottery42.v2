@@ -1,28 +1,28 @@
 package com.example.pruebas.presentation
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.example.pruebas.presentation.detailScreen.DetailIntent
 import com.example.pruebas.presentation.detailScreen.DetailScreen
 import com.example.pruebas.presentation.detailScreen.DetailViewModel
-import com.example.pruebas.presentation.extraDetailScreen.ExtraDetailIntent
 import com.example.pruebas.presentation.extraDetailScreen.ExtraDetailScreen
 import com.example.pruebas.presentation.extraDetailScreen.ExtraDetailViewModel
 import com.example.pruebas.presentation.homeScreen.HomeIntent
@@ -30,14 +30,12 @@ import com.example.pruebas.presentation.homeScreen.HomeScreen
 import com.example.pruebas.presentation.homeScreen.HomeScreenViewModel
 import com.example.pruebas.presentation.homeScreen.MyFAB
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun App(
     homeVM: HomeScreenViewModel = koinViewModel(),
-    scannerVM: ScannerViewModel = koinViewModel(),
-    detailVM: DetailViewModel = koinViewModel(),
-    extraDetailVM: ExtraDetailViewModel = koinViewModel()
+    scannerVM: ScannerViewModel = koinViewModel()
 ) {
     val state = homeVM.state
 
@@ -66,13 +64,7 @@ fun App(
         contentWindowInsets = WindowInsets.safeDrawing
     ) { padding ->
         val entryProvider = entryProvider {
-            entry<HomeKey>(
-                metadata = ListDetailSceneStrategy.listPane(sceneKey = HomeKey) +
-                        ListDetailSceneStrategy.paneAnimation(
-                            enterTransition = slideInHorizontally { it },
-                            exitTransition = slideOutHorizontally { -it }
-                        )
-            ) {
+            entry<HomeKey> {
                 HomeScreen(
                     modifier = Modifier.padding(padding),
                     tickets = state.tickets,
@@ -83,16 +75,8 @@ fun App(
                 )
             }
 
-            entry<DetailKey>(
-                metadata = ListDetailSceneStrategy.detailPane(sceneKey = DetailKey) +
-                        ListDetailSceneStrategy.paneAnimation(
-                            enterTransition = slideInHorizontally { it },
-                            exitTransition = slideOutHorizontally { -it }
-                        )
-            ) { key ->
-                LaunchedEffect(key.ticketId) {
-                    detailVM.onIntent(DetailIntent.LoadTicket(key.ticketId))
-                }
+            entry<DetailKey> { key ->
+                val detailVM: DetailViewModel = koinViewModel { parametersOf(key.ticketId) }
                 DetailScreen(
                     modifier = Modifier.padding(padding),
                     state = detailVM.state,
@@ -116,16 +100,9 @@ fun App(
                 )
             }
 
-            entry<ExtraDetailKey>(
-                metadata = ListDetailSceneStrategy.extraPane(sceneKey = ExtraDetailKey) +
-                        ListDetailSceneStrategy.paneAnimation(
-                            enterTransition = slideInHorizontally { it },
-                            exitTransition = slideOutHorizontally { -it }
-                        )
-            ) { key ->
-                LaunchedEffect(key.ticketId) {
-                    extraDetailVM.onIntent(ExtraDetailIntent.LoadInfo(key.ticketId))
-                }
+            entry<ExtraDetailKey> { key ->
+                val extraDetailVM: ExtraDetailViewModel =
+                    koinViewModel { parametersOf(key.ticketId) }
                 ExtraDetailScreen(
                     modifier = Modifier.padding(padding),
                     state = extraDetailVM.state
@@ -140,6 +117,37 @@ fun App(
         NavDisplay(
             backStack = backStack,
             onBack = { backStack.removeLastOrNull() },
+            entryDecorators = listOf(
+                rememberSaveableStateHolderNavEntryDecorator(),
+                rememberViewModelStoreNavEntryDecorator()
+            ),
+            transitionSpec = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(1000)
+                ) togetherWith slideOutHorizontally(
+                    targetOffsetX = { -it },
+                    animationSpec = tween(1000)
+                )
+            },
+            popTransitionSpec = {
+                slideInHorizontally(
+                    initialOffsetX = { -it },
+                    animationSpec = tween(1000)
+                ) togetherWith slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(1000)
+                )
+            },
+            predictivePopTransitionSpec = {
+                slideInHorizontally(
+                    initialOffsetX = { -it },
+                    animationSpec = tween(1000)
+                ) togetherWith slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(1000)
+                )
+            },
             entryProvider = entryProvider
         )
     }

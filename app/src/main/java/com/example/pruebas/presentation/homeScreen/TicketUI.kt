@@ -38,7 +38,7 @@ fun TicketUI(
             .height(uiModel.height.dp),
 
         shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+        colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = uiModel.elevation)
     ) {
 

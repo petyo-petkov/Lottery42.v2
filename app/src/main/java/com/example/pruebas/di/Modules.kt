@@ -33,6 +33,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -58,8 +59,8 @@ val scannerModule: Module = module {
 val viewModelModule = module {
     viewModelOf(::HomeScreenViewModel)
     viewModelOf(::ScannerViewModel)
-    viewModelOf(::DetailViewModel)
-    viewModelOf(::ExtraDetailViewModel)
+    viewModel { [ticketId: String] -> DetailViewModel(ticketId = ticketId, webViewRepo = get(), dbRepo = get()) }
+    viewModel { [ticketId: String] -> ExtraDetailViewModel(ticketId = ticketId, netRepo = get(), dbRepo = get()) }
 }
 
 val repositoryModule = module {
