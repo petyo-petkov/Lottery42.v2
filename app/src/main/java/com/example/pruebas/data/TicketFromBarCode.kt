@@ -15,7 +15,6 @@ suspend fun ticketFromBarCode(
     val numDecimo: String = rawData.substring(11..15)
     val serie = rawData.substring(7..9)
     val fraccion = rawData.substring(5..6)
-    val type = rawData.take(1)
 
 //    val fetchData = try {
 //        webViewRepo.getInfoLNAC(numSorteo, gameType)
@@ -31,33 +30,21 @@ suspend fun ticketFromBarCode(
 //    val fecha = fetchData?.fecha ?: ""
 //    val precio = fetchData?.precio ?: "0.0"
 
-    val respond = networkRepo.getInfoNacional(numSorteo)
-    val data = respond.data?.lastOrNull()
-
-    val name = data?.game?.name ?: ""
-    val gameType = data?.game?.slug ?:""
-    val drawId = data?.drawId ?: ""
-    val cdc = data?.drawId?.take(5) ?: ""
-    val fecha = data?.drawDate ?:""
-    val precio = (data?.resultData?.reintegros?.firstOrNull()?.prize )?.div(100).toString()
-    val gameStatus = data?.status ?: ""
-
-
-
+    val info = networkRepo.getInfoSorteoNacional(numSorteo)
 
     return Ticket(
         id = id,
-        drawId = drawId,
-        cdc = cdc,
-        gameType = gameType,
-        name = name,
+        drawId = info?.drawId ?: "",
+        cdc = info?.cdc ?: "",
+        gameType = info?.gameType ?: "nacional",
+        name = info?.name ?: "Lotería Nacional",
         numeroSorteo = numSorteo,
-        drawDate = fecha,
-        gameStatus = gameStatus,
+        drawDate = info?.drawDate ?: "",
+        gameStatus = info?.gameStatus ?: "",
         office = "office?",
         numbers = emptyList(),
         prize = "0.0",
-        betPrice = precio,
+        betPrice = info?.precio ?: "0.0",
         isWinner = false,
         joker = "",
         reintegro = "",
@@ -68,8 +55,6 @@ suspend fun ticketFromBarCode(
         serie = serie,
         fraccion = fraccion,
         clave = emptyList()
-
-
     )
 
 }

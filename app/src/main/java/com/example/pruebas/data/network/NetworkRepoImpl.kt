@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.pruebas.data.network.lotteryModels.checkModel.CheckModel
 import com.example.pruebas.data.network.lotteryModels.infoModel.InfoModel
 import com.example.pruebas.data.network.lotteryModels.infoNacional.InfoNacional
+import com.example.pruebas.data.network.lotteryModels.proximosNacional.ProximosNacional
 import com.example.pruebas.domain.LotteryGame
 import com.example.pruebas.domain.NetworkRepo
 import com.example.pruebas.domain.Ticket
@@ -12,6 +13,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.request
+import kotlinx.serialization.Serializable
 
 class NetworkRepoImpl(private val client: HttpClient) : NetworkRepo {
 
@@ -30,6 +32,64 @@ class NetworkRepoImpl(private val client: HttpClient) : NetworkRepo {
             it?.drawId?.takeLast(3) == numSorteo
         }
         return response.copy(data = listOf(sorteo))
+
+    }
+
+    // para TicketFromBarCode
+    override suspend fun getInfoSorteoNacional(numSorteo: String): InfoSorteoNacional? {
+        try {
+            val proximosLNAC = client.get("draws/upcoming/nacional").body<ProximosNacional>()
+
+            val proximoMatch = proximosLNAC.data?.find {
+                it?.drawId?.takeLast(3) == numSorteo
+            }
+
+            Log.i("Proximo", proximoMatch.toString())
+
+            if (proximoMatch != null) {
+                val precioEuros = proximoMatch.metadata?.precio.toString() ?: "0.0"
+                return InfoSorteoNacional(
+                    drawId = proximoMatch.drawId.orEmpty(),
+                    drawDate = proximoMatch.drawDate.orEmpty(),
+                    name = proximoMatch.game?.name ?: "Lotería Nacional",
+                    gameType = proximoMatch.game?.slug ?: "nacional",
+                    cdc = proximoMatch.metadata?.cdc ?: proximoMatch.drawId?.take(5).orEmpty(),
+                    precio = precioEuros,
+                    gameStatus = proximoMatch.status ?: "upcoming",
+                    isCelebrado = false
+                )
+            }
+        } catch (e: Exception) {
+            Log.e("NetworkRepoImpl", "Error al obtener proximosLNAC", e)
+        }
+
+        try {
+            val ultimosLNAC = client.get("results/nacional").body<InfoNacional>()
+
+            val celebradoMatch = ultimosLNAC.data?.find {
+                it?.drawId?.takeLast(3) == numSorteo
+            }
+
+            if (celebradoMatch != null) {
+                val precioEuros = (celebradoMatch.resultData?.reintegros?.firstOrNull()?.prize)
+                    ?.div(100.0)?.toString() ?: "0.0"
+
+                return InfoSorteoNacional(
+                    drawId = celebradoMatch.drawId.orEmpty(),
+                    drawDate = celebradoMatch.drawDate.orEmpty(),
+                    name = celebradoMatch.game?.name ?: "Lotería Nacional",
+                    gameType = celebradoMatch.game?.slug ?: "nacional",
+                    cdc = celebradoMatch.drawId?.take(5).orEmpty(),
+                    precio = precioEuros,
+                    gameStatus = celebradoMatch.status ?: "completed",
+                    isCelebrado = true
+                )
+            }
+        } catch (e: Exception) {
+            Log.e("NetworkRepoImpl", "Error al obtener ultimosLNAC", e)
+        }
+
+        return null
 
     }
 
@@ -83,3 +143,15 @@ class NetworkRepoImpl(private val client: HttpClient) : NetworkRepo {
 
 
 }
+
+@Serializable
+data class InfoSorteoNacional(
+    val drawId: String,
+    val drawDate: String,
+    val name: String,
+    val gameType: String,
+    val cdc: String,
+    val precio: String,
+    val gameStatus: String,
+    val isCelebrado: Boolean
+)

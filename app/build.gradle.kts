@@ -65,6 +65,7 @@ android {
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.compose.adaptive.navigation3)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
@@ -73,7 +74,12 @@ dependencies {
     implementation(libs.material.icons.extended)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.compose.material3.window.size.class1)
+    implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
 
+    implementation(libs.androidx.compose.adaptive)
+    implementation(libs.androidx.compose.adaptive.layout)
+    implementation(libs.androidx.compose.adaptive.navigation)
 
     //Ktor
     implementation(libs.ktor.client.core)
@@ -82,12 +88,6 @@ dependencies {
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.kotlinx.serialization.json)
 
-    implementation(libs.androidx.compose.material3.window.size.class1)
-    implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
-
-    implementation(libs.androidx.compose.adaptive)
-    implementation(libs.androidx.compose.adaptive.layout)
-    implementation(libs.androidx.compose.adaptive.navigation)
 
     //Barcode Scanner
     implementation(libs.play.services.code.scanner)

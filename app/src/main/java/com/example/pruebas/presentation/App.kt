@@ -5,13 +5,14 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -30,6 +31,7 @@ import com.example.pruebas.presentation.homeScreen.HomeScreenViewModel
 import com.example.pruebas.presentation.homeScreen.MyFAB
 import org.koin.compose.viewmodel.koinViewModel
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun App(
     homeVM: HomeScreenViewModel = koinViewModel(),
@@ -37,9 +39,9 @@ fun App(
     detailVM: DetailViewModel = koinViewModel(),
     extraDetailVM: ExtraDetailViewModel = koinViewModel()
 ) {
-    val backStack = rememberNavBackStack(HomeKey)
     val state = homeVM.state
 
+    val backStack = rememberNavBackStack(HomeKey)
     val currentKey = backStack.lastOrNull()
 
     Scaffold(
@@ -60,11 +62,17 @@ fun App(
                 )
             }
         },
-        containerColor = MaterialTheme.colorScheme.surface ,
+        containerColor = MaterialTheme.colorScheme.surface,
         contentWindowInsets = WindowInsets.safeDrawing
     ) { padding ->
         val entryProvider = entryProvider {
-            entry<HomeKey> {
+            entry<HomeKey>(
+                metadata = ListDetailSceneStrategy.listPane(sceneKey = HomeKey) +
+                        ListDetailSceneStrategy.paneAnimation(
+                            enterTransition = slideInHorizontally { it },
+                            exitTransition = slideOutHorizontally { -it }
+                        )
+            ) {
                 HomeScreen(
                     modifier = Modifier.padding(padding),
                     tickets = state.tickets,
@@ -75,7 +83,13 @@ fun App(
                 )
             }
 
-            entry<DetailKey> { key ->
+            entry<DetailKey>(
+                metadata = ListDetailSceneStrategy.detailPane(sceneKey = DetailKey) +
+                        ListDetailSceneStrategy.paneAnimation(
+                            enterTransition = slideInHorizontally { it },
+                            exitTransition = slideOutHorizontally { -it }
+                        )
+            ) { key ->
                 LaunchedEffect(key.ticketId) {
                     detailVM.onIntent(DetailIntent.LoadTicket(key.ticketId))
                 }
@@ -90,7 +104,6 @@ fun App(
                         backStack.add(ExtraDetailKey(key.ticketId))
                     }
                 )
-
                 DeleteDialog(
                     onDismiss = { detailVM.onIntent(DetailIntent.ToggleDeleteDialog) },
                     onConfirm = {
@@ -103,7 +116,13 @@ fun App(
                 )
             }
 
-            entry<ExtraDetailKey> { key ->
+            entry<ExtraDetailKey>(
+                metadata = ListDetailSceneStrategy.extraPane(sceneKey = ExtraDetailKey) +
+                        ListDetailSceneStrategy.paneAnimation(
+                            enterTransition = slideInHorizontally { it },
+                            exitTransition = slideOutHorizontally { -it }
+                        )
+            ) { key ->
                 LaunchedEffect(key.ticketId) {
                     extraDetailVM.onIntent(ExtraDetailIntent.LoadInfo(key.ticketId))
                 }
@@ -120,21 +139,8 @@ fun App(
 
         NavDisplay(
             backStack = backStack,
-            entryProvider = entryProvider,
             onBack = { backStack.removeLastOrNull() },
-            transitionSpec = {
-                slideInHorizontally( initialOffsetX = { it }) + fadeIn() togetherWith
-                        slideOutHorizontally(targetOffsetX = { -it }) + fadeOut()
-            },
-            popTransitionSpec = {
-                slideInHorizontally(initialOffsetX = { -it }) + fadeIn() togetherWith
-                        slideOutHorizontally(targetOffsetX = { it }) + fadeOut()
-            },
-            predictivePopTransitionSpec = {
-                slideInHorizontally(initialOffsetX = { -it }) + fadeIn() togetherWith
-                        slideOutHorizontally(targetOffsetX = { it }) + fadeOut()
-            },
-
+            entryProvider = entryProvider
         )
     }
 
