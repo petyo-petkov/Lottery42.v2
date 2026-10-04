@@ -13,4 +13,4 @@ data class DetailKey(val ticketId: String) : NavKey
 data class ExtraDetailKey(val ticketId: String) : NavKey
 
 @Serializable
-data object SettingsKey : NavKey
+data object JackpotKey : NavKey

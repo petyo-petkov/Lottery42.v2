@@ -2,6 +2,7 @@ package com.example.pruebas.presentation.homeScreen
 
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingToolbarDefaults
@@ -29,6 +30,7 @@ import androidx.compose.material.icons.Icons as MaterialIcons
 fun MyFAB(
     onDeleteClick: () -> Unit,
     onScannerClick: () -> Unit,
+    onJackpotClick: () -> Unit,
 ){
 
     var expanded by rememberSaveable { mutableStateOf(false) }
@@ -61,6 +63,28 @@ fun MyFAB(
         },
         colors = vibrantColors,
         content = {
+            TooltipBox(
+                positionProvider =
+                    TooltipDefaults.rememberTooltipPositionProvider(
+                        TooltipAnchorPosition.Above
+                    ),
+                tooltip = {
+                    PlainTooltip(
+                        modifier =
+                            Modifier
+                    ) {
+                        Text("Localized description")
+                    }
+                },
+                state = rememberTooltipState(),
+            ) {
+                IconButton(
+                    onClick = { onJackpotClick() },
+                    Modifier.focusProperties { canFocus = expanded },
+                ) {
+                    Icon(MaterialIcons.Filled.Info, contentDescription = "Localized description")
+                }
+            }
             TooltipBox(
                 positionProvider =
                     TooltipDefaults.rememberTooltipPositionProvider(

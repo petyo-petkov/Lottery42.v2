@@ -1,11 +1,9 @@
 package com.example.pruebas.presentation
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.metadata
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
@@ -29,8 +28,34 @@ import com.example.pruebas.presentation.homeScreen.HomeIntent
 import com.example.pruebas.presentation.homeScreen.HomeScreen
 import com.example.pruebas.presentation.homeScreen.HomeScreenViewModel
 import com.example.pruebas.presentation.homeScreen.MyFAB
+import com.example.pruebas.presentation.jackpotScreen.JackpotScreen
+import com.example.pruebas.presentation.jackpotScreen.JackpotScreenViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+
+private val fadeTransitionMetadata = metadata {
+    put(NavDisplay.TransitionKey) {
+        fadeIn(animationSpec = spring(dampingRatio = 0.8f)) togetherWith fadeOut(
+            animationSpec = spring(
+                dampingRatio = 0.8f
+            )
+        )
+    }
+    put(NavDisplay.PopTransitionKey) {
+        fadeIn(animationSpec = spring(dampingRatio = 0.8f)) togetherWith fadeOut(
+            animationSpec = spring(
+                dampingRatio = 0.8f
+            )
+        )
+    }
+    put(NavDisplay.PredictivePopTransitionKey) {
+        fadeIn(animationSpec = spring(dampingRatio = 0.8f)) togetherWith fadeOut(
+            animationSpec = spring(
+                dampingRatio = 0.8f
+            )
+        )
+    }
+}
 
 @Composable
 fun App(
@@ -57,6 +82,10 @@ fun App(
                     onScannerClick = {
                         scannerVM.onIntent(ScannerIntent.StartScan)
                     },
+                    onJackpotClick = {
+                        homeVM.onIntent(HomeIntent.Check)
+                        backStack.add(JackpotKey)
+                    }
                 )
             }
         },
@@ -64,7 +93,9 @@ fun App(
         contentWindowInsets = WindowInsets.safeDrawing
     ) { padding ->
         val entryProvider = entryProvider {
-            entry<HomeKey> {
+            entry<HomeKey>(
+                metadata = fadeTransitionMetadata
+            ) {
                 HomeScreen(
                     modifier = Modifier.padding(padding),
                     tickets = state.tickets,
@@ -75,7 +106,9 @@ fun App(
                 )
             }
 
-            entry<DetailKey> { key ->
+            entry<DetailKey>(
+                metadata = fadeTransitionMetadata
+            ) { key ->
                 val detailVM: DetailViewModel = koinViewModel { parametersOf(key.ticketId) }
                 DetailScreen(
                     modifier = Modifier.padding(padding),
@@ -100,7 +133,9 @@ fun App(
                 )
             }
 
-            entry<ExtraDetailKey> { key ->
+            entry<ExtraDetailKey>(
+                metadata = fadeTransitionMetadata
+            ) { key ->
                 val extraDetailVM: ExtraDetailViewModel =
                     koinViewModel { parametersOf(key.ticketId) }
                 ExtraDetailScreen(
@@ -109,8 +144,15 @@ fun App(
                 )
             }
 
-            entry<SettingsKey> {
-                // Destino para pantalla de ajustes u otra pantalla futura
+            entry<JackpotKey>(
+                metadata = fadeTransitionMetadata
+            ) {
+                val jackpotScreenVM: JackpotScreenViewModel =
+                    koinViewModel()
+                JackpotScreen(
+                    jackpotState = jackpotScreenVM.jackpotUiState,
+                    modifier = Modifier.padding(padding)
+                )
             }
         }
 
@@ -121,33 +163,6 @@ fun App(
                 rememberSaveableStateHolderNavEntryDecorator(),
                 rememberViewModelStoreNavEntryDecorator()
             ),
-            transitionSpec = {
-                slideInHorizontally(
-                    initialOffsetX = { it },
-                    animationSpec = tween(1000)
-                ) togetherWith slideOutHorizontally(
-                    targetOffsetX = { -it },
-                    animationSpec = tween(1000)
-                )
-            },
-            popTransitionSpec = {
-                slideInHorizontally(
-                    initialOffsetX = { -it },
-                    animationSpec = tween(1000)
-                ) togetherWith slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(1000)
-                )
-            },
-            predictivePopTransitionSpec = {
-                slideInHorizontally(
-                    initialOffsetX = { -it },
-                    animationSpec = tween(1000)
-                ) togetherWith slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(1000)
-                )
-            },
             entryProvider = entryProvider
         )
     }

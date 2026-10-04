@@ -4,4 +4,6 @@ sealed interface HomeIntent {
     data object DeleteAll : HomeIntent
     data object ToggleDeleteDialog : HomeIntent
     data object Scann : HomeIntent
+
+    data object Check: HomeIntent
 }

@@ -26,6 +26,23 @@ class WebViewRepoImpl(private val webView: WebView) : WebViewRepo {
     }
 
 
+
+
+
+
+
+    override suspend fun getJackpot(): List<JsonObject> {
+        val jackpot = fetchData(
+            webView = webView,
+            url = GET_JACKPOT,
+            fetchFun = ::getRawString
+        )
+        if (jackpot.startsWith("Error:")) {
+            throw Exception(jackpot)
+        }
+        return jsonConfig().decodeFromString(jackpot)
+    }
+
     override suspend fun getPremios(ticket: Ticket): String {
         val url = when (ticket.gameType) {
             "primitiva" -> urlPremioLAPR(ticket)
@@ -49,10 +66,7 @@ class WebViewRepoImpl(private val webView: WebView) : WebViewRepo {
     }
 
     override suspend fun getPremioLNAC(numDecimo: String, idSorteo: String): String {
-        fun JsonObject.getString(key: String): String? {
-            val element = this[key]
-            return if (element is JsonPrimitive) element.contentOrNull else null
-        }
+
         val url = urlPremioLNACPorNumero(numeroLoteria = numDecimo, idSorteo = idSorteo)
         val data = getInfoAllGames(url)
         return data[0].getString("premioEnCentimos") ?: "0.2"

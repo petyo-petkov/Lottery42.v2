@@ -35,7 +35,7 @@ class NetworkRepoImpl(private val client: HttpClient) : NetworkRepo {
 
     }
 
-    // para TicketFromBarCode
+    // para crear el TicketFromBarCode
     override suspend fun getInfoSorteoNacional(numSorteo: String): InfoSorteoNacional? {
         try {
             val proximosLNAC = client.get("draws/upcoming/nacional").body<ProximosNacional>()
@@ -47,7 +47,7 @@ class NetworkRepoImpl(private val client: HttpClient) : NetworkRepo {
             Log.i("Proximo", proximoMatch.toString())
 
             if (proximoMatch != null) {
-                val precioEuros = proximoMatch.metadata?.precio.toString() ?: "0.0"
+                val precioEuros = proximoMatch.metadata?.precio.toString()
                 return InfoSorteoNacional(
                     drawId = proximoMatch.drawId.orEmpty(),
                     drawDate = proximoMatch.drawDate.orEmpty(),

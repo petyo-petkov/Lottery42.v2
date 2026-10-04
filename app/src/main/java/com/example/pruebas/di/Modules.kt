@@ -20,6 +20,7 @@ import com.example.pruebas.presentation.ScannerViewModel
 import com.example.pruebas.presentation.detailScreen.DetailViewModel
 import com.example.pruebas.presentation.extraDetailScreen.ExtraDetailViewModel
 import com.example.pruebas.presentation.homeScreen.HomeScreenViewModel
+import com.example.pruebas.presentation.jackpotScreen.JackpotScreenViewModel
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanner
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
@@ -59,6 +60,7 @@ val scannerModule: Module = module {
 val viewModelModule = module {
     viewModelOf(::HomeScreenViewModel)
     viewModelOf(::ScannerViewModel)
+    viewModelOf(::JackpotScreenViewModel)
     viewModel { [ticketId: String] -> DetailViewModel(ticketId = ticketId, webViewRepo = get(), dbRepo = get()) }
     viewModel { [ticketId: String] -> ExtraDetailViewModel(ticketId = ticketId, netRepo = get(), dbRepo = get()) }
 }

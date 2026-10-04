@@ -6,10 +6,10 @@ interface WebViewRepo {
 
     suspend fun getInfoAllGames(url: String): List<JsonObject>
 
-    suspend fun getPremioLNAC(numDecimo: String, idSorteo: String) : String
+    suspend fun getPremioLNAC(numDecimo: String, idSorteo: String): String
 
     suspend fun getPremios(ticket: Ticket): String
 
-
+    suspend fun getJackpot(): List<JsonObject>
 
 }

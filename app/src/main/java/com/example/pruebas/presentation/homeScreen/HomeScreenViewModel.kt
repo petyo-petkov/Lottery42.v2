@@ -38,6 +38,10 @@ class HomeScreenViewModel(
             is HomeIntent.Scann -> {
                 state = state.copy(isScanning = !state.isScanning)
             }
+
+            is HomeIntent.Check -> {
+                // Se ejecuta al pulsar el botón de Jackpots en el FAB
+            }
         }
     }
 
