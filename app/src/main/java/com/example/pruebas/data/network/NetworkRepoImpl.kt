@@ -37,11 +37,13 @@ class NetworkRepoImpl(private val client: HttpClient) : NetworkRepo {
 
     // para crear el TicketFromBarCode
     override suspend fun getInfoSorteoNacional(numSorteo: String): InfoSorteoNacional? {
+        val targetInt = numSorteo.toIntOrNull()
         try {
             val proximosLNAC = client.get("draws/upcoming/nacional").body<ProximosNacional>()
 
-            val proximoMatch = proximosLNAC.data?.find {
-                it?.drawId?.takeLast(3) == numSorteo
+            val proximoMatch = proximosLNAC.data?.find { item ->
+                val last3 = item?.drawId?.takeLast(3)
+                (last3 == numSorteo) || (targetInt != null && last3?.toIntOrNull() == targetInt)
             }
 
             Log.i("Proximo", proximoMatch.toString())
@@ -66,8 +68,9 @@ class NetworkRepoImpl(private val client: HttpClient) : NetworkRepo {
         try {
             val ultimosLNAC = client.get("results/nacional").body<InfoNacional>()
 
-            val celebradoMatch = ultimosLNAC.data?.find {
-                it?.drawId?.takeLast(3) == numSorteo
+            val celebradoMatch = ultimosLNAC.data?.find { item ->
+                val last3 = item?.drawId?.takeLast(3)
+                (last3 == numSorteo) || (targetInt != null && last3?.toIntOrNull() == targetInt)
             }
 
             if (celebradoMatch != null) {

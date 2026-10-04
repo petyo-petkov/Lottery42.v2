@@ -55,20 +55,31 @@ fun JackpotScreen(
             }
 
             else -> {
-                LazyVerticalStaggeredGrid(
-                    columns = StaggeredGridCells.Fixed(2),
-                    verticalItemSpacing = 8.dp,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(12.dp),
-                    modifier = Modifier.fillMaxSize()
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    items(jackpotState.jackpots) { item ->
-                        JackpotCard(
-                            nombre = item.nombre,
-                            fechaCierre = item.fechaCierre,
-                            estado = item.estado,
-                            jackpot = item.jackpot
-                        )
+                    Text(
+                        text = "Botes proximos sorteos:",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                    LazyVerticalStaggeredGrid(
+                        columns = StaggeredGridCells.Fixed(2),
+                        verticalItemSpacing = 8.dp,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(12.dp),
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(jackpotState.jackpots) { item ->
+                            JackpotCard(
+                                nombre = item.nombre,
+                                fechaCierre = item.fechaCierre,
+                                estado = item.estado,
+                                jackpot = item.jackpot
+                            )
+                        }
                     }
                 }
             }

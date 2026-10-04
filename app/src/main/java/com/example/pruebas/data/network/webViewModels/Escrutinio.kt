@@ -1,0 +1,16 @@
+package com.example.pruebas.data.network.webViewModels
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Escrutinio(
+    val categoria: Int,
+    val ganadores: Int?,
+    val premio: String,
+    val tipo: String,
+
+    val ganadores_eu: String? = "",
+    val num_pagos: Int? = 0,
+    val periodicidad: String? = "",
+    val cantidad_periodica: String? = ""
+)

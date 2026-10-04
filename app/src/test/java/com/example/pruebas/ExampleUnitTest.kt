@@ -71,4 +71,11 @@ class ExampleUnitTest {
         val expected = "https://www.loteriasyapuestas.es/es/resultados/gordo-primitiva/comprobar?drawId=940205013&modalidad=simple&bloque1=28y27y1y2y3&reintegro1=4&bloque2=28y27y1y2y5&reintegro2=4&bloque3=28y27y1y2y8&reintegro3=3"
         assertEquals(expected, url)
     }
+
+    @Test
+    fun ticketFromQrCode_fallbackIdWhenMissingA() {
+        val rawData = "P=2;S=251;W=0"
+        val ticket = com.example.pruebas.data.ticketFromQrCode(rawData)
+        assertEquals(rawData, ticket.id)
+    }
 }
