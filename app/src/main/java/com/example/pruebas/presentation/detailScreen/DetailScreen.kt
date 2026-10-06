@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.pruebas.data.toDisplayDate
+import com.example.pruebas.domain.LotteryGame
 import com.example.pruebas.presentation.Divisor
 import com.example.pruebas.presentation.InfoText
 import com.example.pruebas.presentation.detailScreen.detailsScreens.BonolotoDetails
@@ -88,26 +89,24 @@ fun DetailScreen(
             Divisor()
 
             // Fecha
-            InfoText(text = ticket.drawDate.toDisplayDate())
+            InfoText(text = ticket.fecha.toDisplayDate())
             Divisor()
 
             // #Sorteo
             InfoText(text = "Sorteo: ${ticket.numeroSorteo}")
             Divisor()
-            if (ticket.gameType != "nacional")
+            if (ticket.lotteryGame !is LotteryGame.Nacional)
                 InfoText(text = "Combinaciones:")
 
             // Info
-            when (ticket.gameType) {
-                "euromillones" -> EuromillonesDetails(ticket)
-                "primitiva" -> PrimitivaDetails(ticket)
-                "eurodreams" -> EurodreamsDetails(ticket)
-                "bonoloto" -> BonolotoDetails(ticket)
-                "nacional" -> LoteriaNacional(ticket)
-                "LNAC" -> LoteriaNacional(ticket)
-                "gordo" -> {
-                    Gordo(ticket)
-                }
+            when (ticket.lotteryGame) {
+                is LotteryGame.Euromillones -> EuromillonesDetails(ticket)
+                is LotteryGame.Primitiva -> PrimitivaDetails(ticket)
+                is LotteryGame.Eurodreams -> EurodreamsDetails(ticket)
+                is LotteryGame.Bonoloto -> BonolotoDetails(ticket)
+                is LotteryGame.Nacional -> LoteriaNacional(ticket)
+                is LotteryGame.Gordo -> Gordo(ticket)
+                else -> {}
             }
             Divisor()
 
@@ -154,6 +153,7 @@ fun DetailScreen(
             showDialog = true,
             isLoadingCheck = state.isLoadingCheck,
             ticket = ticket,
+            error = state.error
         )
     }
 }

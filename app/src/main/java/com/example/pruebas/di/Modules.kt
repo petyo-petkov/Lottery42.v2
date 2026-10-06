@@ -9,11 +9,9 @@ import com.example.pruebas.data.BalanceRepoImpl
 import com.example.pruebas.data.ScannerRepoImpl
 import com.example.pruebas.data.db.AppDatabase
 import com.example.pruebas.data.db.LotteryDatabaseRepoImpl
-import com.example.pruebas.data.network.NetworkRepoImpl
 import com.example.pruebas.data.network.WebViewRepoImpl
 import com.example.pruebas.domain.BalanceRepo
 import com.example.pruebas.domain.LotteryDatabaseRepo
-import com.example.pruebas.domain.NetworkRepo
 import com.example.pruebas.domain.ScannerRepo
 import com.example.pruebas.domain.WebViewRepo
 import com.example.pruebas.presentation.ScannerViewModel
@@ -62,12 +60,11 @@ val viewModelModule = module {
     viewModelOf(::ScannerViewModel)
     viewModelOf(::JackpotScreenViewModel)
     viewModel { [ticketId: String] -> DetailViewModel(ticketId = ticketId, webViewRepo = get(), dbRepo = get()) }
-    viewModel { [ticketId: String] -> ExtraDetailViewModel(ticketId = ticketId, netRepo = get(), dbRepo = get()) }
+    viewModel { [ticketId: String] -> ExtraDetailViewModel(ticketId = ticketId, webViewRepo = get(), dbRepo = get()) }
 }
 
 val repositoryModule = module {
     singleOf(::LotteryDatabaseRepoImpl) bind LotteryDatabaseRepo::class
-    singleOf(::NetworkRepoImpl) bind NetworkRepo::class
     singleOf(::BalanceRepoImpl) bind BalanceRepo::class
     singleOf(::WebViewRepoImpl) bind WebViewRepo::class
 }

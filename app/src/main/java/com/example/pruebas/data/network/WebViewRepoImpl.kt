@@ -7,6 +7,10 @@ import com.example.pruebas.data.network.urlsGetPremio.urlPremioEDMS
 import com.example.pruebas.data.network.urlsGetPremio.urlPremioELGR
 import com.example.pruebas.data.network.urlsGetPremio.urlPremioEMIL
 import com.example.pruebas.data.network.urlsGetPremio.urlPremioLAPR
+import com.example.pruebas.data.network.webViewModels.ResultadoSorteo
+import com.example.pruebas.data.network.webViewModels.lnac.ResultadoSorteoLNAC
+import com.example.pruebas.data.toApiDateFormat
+import com.example.pruebas.domain.LotteryGame
 import com.example.pruebas.domain.Ticket
 import com.example.pruebas.domain.WebViewRepo
 import kotlinx.serialization.Serializable
@@ -23,8 +27,118 @@ class WebViewRepoImpl(private val webView: WebView) : WebViewRepo {
             webView = webView,
             url = url,
             fetchFun = ::getRawString
-        )
-        return jsonConfig().decodeFromString(rawString)
+        ).trim()
+
+        if (rawString.startsWith("Error:") || rawString.isBlank()) {
+            Log.e("getInfoAllGames", "Error o respuesta vacía para url $url: $rawString")
+            return emptyList()
+        }
+
+        return try {
+            when {
+                rawString.startsWith("[") -> jsonConfig().decodeFromString<List<JsonObject>>(
+                    rawString
+                )
+
+                rawString.startsWith("{") -> listOf(
+                    jsonConfig().decodeFromString<JsonObject>(
+                        rawString
+                    )
+                )
+
+                else -> {
+                    Log.e("getInfoAllGames", "Respuesta no es JSON para url $url: $rawString")
+                    emptyList()
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("getInfoAllGames", "Error parseando JSON de $url", e)
+            emptyList()
+        }
+    }
+
+    override suspend fun getExtraInfo(ticket: Ticket): ResultadoSorteo? {
+        try {
+            val game = ticket.lotteryGame
+            val url = when (game) {
+                is LotteryGame.Bonoloto -> GET_ULTIMOS_CELEBRADOS_BONO
+                is LotteryGame.Primitiva -> GET_ULTIMOS_CELEBRADOS_LAPR
+                is LotteryGame.Gordo -> GET_ULTIMOS_CELEBRADOS_ELGR
+                is LotteryGame.Euromillones -> GET_ULTIMOS_CELEBRADOS_EMIL
+                is LotteryGame.Eurodreams -> GET_ULTIMOS_CELEBRADOS_EDMS
+                is LotteryGame.Nacional -> GET_ULTIMOS_CELEBRADOS_LNAC
+                else -> ""
+            }
+
+            if (url.isBlank()) {
+                Log.e("getExtraInfo", "URL vacía para gameType: ${ticket.gameId}")
+                return null
+            }
+
+            val rawStr = fetchData(webView, url, ::getRawString).trim()
+
+            if (rawStr.startsWith("Error:") || rawStr.isBlank()) {
+                Log.e("getExtraInfo", "Error en la respuesta para url $url: $rawStr")
+                return null
+            }
+
+            val sorteos = when {
+                rawStr.startsWith("[") -> jsonConfig().decodeFromString<List<ResultadoSorteo>>(rawStr)
+                rawStr.startsWith("{") -> listOf(jsonConfig().decodeFromString<ResultadoSorteo>(rawStr))
+                else -> {
+                    Log.e("getExtraInfo", "Respuesta no es JSON para url $url: $rawStr")
+                    emptyList()
+                }
+            }
+
+            val sorteo = sorteos.find { it.idSorteo == ticket.idSorteo }
+                ?: sorteos.find {
+                    it.idSorteo.endsWith(ticket.numeroSorteo) &&
+                            (ticket.fecha.isBlank() || it.fechaSorteo.contains(ticket.fecha))
+                }
+
+            return sorteo
+        } catch (e: Exception) {
+            Log.e("getExtraInfo", "Error en getExtraInfo para ticket ${ticket.id}", e)
+            return null
+        }
+    }
+
+    override suspend fun getExtraInfoLNAC(ticket: Ticket): ResultadoSorteoLNAC? {
+        try {
+            val fecha = ticket.fecha.toApiDateFormat()
+            if (fecha.isBlank()) {
+                Log.e("getExtraInfoLNAC", "Fecha inválida para el ticket: ${ticket.fecha}")
+                return null
+            }
+
+            val url =
+                "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=LNAC&celebrados=&fechaInicioInclusiva=$fecha&fechaFinInclusiva=$fecha"
+            val rawStr = fetchData(webView, url, ::getRawString).trim()
+
+            if (rawStr.startsWith("Error:") || rawStr.isBlank()) {
+                Log.e("getExtraInfoLNAC", "Error en la respuesta: $rawStr")
+                return null
+            }
+
+            return when {
+                rawStr.startsWith("[") -> {
+                    jsonConfig().decodeFromString<List<ResultadoSorteoLNAC>>(rawStr).firstOrNull()
+                }
+
+                rawStr.startsWith("{") -> {
+                    jsonConfig().decodeFromString<ResultadoSorteoLNAC>(rawStr)
+                }
+
+                else -> {
+                    Log.e("getExtraInfoLNAC", "Respuesta no válida (no es JSON): $rawStr")
+                    null
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("getExtraInfoLNAC", "Error en getExtraInfoLNAC", e)
+        }
+        return null
     }
 
     // Para getMissingInfoLNAC
@@ -56,9 +170,11 @@ class WebViewRepoImpl(private val webView: WebView) : WebViewRepo {
 
             if (proximoSorteo != null) {
                 return MissingInfoLNAC(
-                    drawId = proximoSorteo.getString("id_sorteo") ?: proximoSorteo.getString("drawId") ?: "",
-                    drawDate = proximoSorteo.getString("fecha") ?: proximoSorteo.getString("fecha_sorteo") ?: "",
-                    precio = proximoSorteo.getString("precio") ?: proximoSorteo.getString("precioDecimo") ?: "0.0",
+                    idSorteo = proximoSorteo.getString("id_sorteo") ?: "",
+                    fecha = proximoSorteo.getString("fecha") ?: "",
+                    cierre = proximoSorteo.getString("cierre") ?: "",
+                    apertura = proximoSorteo.getString("apertura") ?: "",
+                    precio = proximoSorteo.getString("precio") ?: "0.0",
                     gameStatus = proximoSorteo.getString("estado") ?: "",
                     isCelebrado = false
                 )
@@ -74,9 +190,11 @@ class WebViewRepoImpl(private val webView: WebView) : WebViewRepo {
 
             if (ultimoSorteo != null) {
                 return MissingInfoLNAC(
-                    drawId = ultimoSorteo.getString("id_sorteo") ?: ultimoSorteo.getString("drawId") ?: "",
-                    drawDate = ultimoSorteo.getString("fecha_sorteo") ?: ultimoSorteo.getString("fecha") ?: "",
-                    precio = ultimoSorteo.getString("precioDecimo") ?: ultimoSorteo.getString("precio") ?: "0.0",
+                    idSorteo = ultimoSorteo.getString("id_sorteo") ?: "",
+                    fecha = ultimoSorteo.getString("fecha_sorteo") ?: "",
+                    cierre = ultimoSorteo.getString("cierre") ?: "",
+                    apertura = ultimoSorteo.getString("apertura") ?: "",
+                    precio = ultimoSorteo.getString("precioDecimo") ?: "0.0",
                     gameStatus = ultimoSorteo.getString("estado") ?: "",
                     isCelebrado = true
                 )
@@ -94,11 +212,16 @@ class WebViewRepoImpl(private val webView: WebView) : WebViewRepo {
 
             if (sorteoMatch != null) {
                 val gameStatus = sorteoMatch.getString("estado") ?: ""
-                val isCelebrado = gameStatus.equals("CELEBRADO", ignoreCase = true) || gameStatus.equals("COMPLETED", ignoreCase = true)
+                val isCelebrado = gameStatus.equals(
+                    "CELEBRADO",
+                    ignoreCase = true
+                ) || gameStatus.equals("COMPLETED", ignoreCase = true)
                 return MissingInfoLNAC(
-                    drawId = sorteoMatch.getString("id_sorteo") ?: sorteoMatch.getString("drawId") ?: "",
-                    drawDate = sorteoMatch.getString("fecha_sorteo") ?: sorteoMatch.getString("fecha") ?: "",
-                    precio = sorteoMatch.getString("precioDecimo") ?: sorteoMatch.getString("precio") ?: "0.0",
+                    idSorteo = sorteoMatch.getString("id_sorteo") ?: "",
+                    fecha = sorteoMatch.getString("fecha_sorteo") ?: "",
+                    cierre = sorteoMatch.getString("cierre") ?: "",
+                    apertura = sorteoMatch.getString("apertura") ?: "",
+                    precio = sorteoMatch.getString("precioDecimo") ?: "0.0",
                     gameStatus = gameStatus,
                     isCelebrado = isCelebrado
                 )
@@ -110,53 +233,67 @@ class WebViewRepoImpl(private val webView: WebView) : WebViewRepo {
         return null
     }
 
-
     override suspend fun getJackpot(): List<JsonObject> {
         val jackpot = fetchData(
             webView = webView,
             url = GET_JACKPOT,
             fetchFun = ::getRawString
-        )
-        if (jackpot.startsWith("Error:")) {
-            throw Exception(jackpot)
+        ).trim()
+
+        if (jackpot.startsWith("Error:") || jackpot.isBlank()) {
+            Log.e("getJackpot", "Error obteniendo jackpot: $jackpot")
+            return emptyList()
         }
-        return jsonConfig().decodeFromString(jackpot)
+
+        return try {
+            when {
+                jackpot.startsWith("[") -> jsonConfig().decodeFromString<List<JsonObject>>(jackpot)
+                jackpot.startsWith("{") -> listOf(jsonConfig().decodeFromString<JsonObject>(jackpot))
+                else -> emptyList()
+            }
+        } catch (e: Exception) {
+            Log.e("getJackpot", "Error parseando jackpot: $jackpot", e)
+            emptyList()
+        }
     }
 
     override suspend fun getPremios(ticket: Ticket): String {
-        val url = when (ticket.gameType) {
-            "primitiva" -> urlPremioLAPR(ticket)
-            "bonoloto" -> urlPremioBONO(ticket)
-            "euromillones" -> urlPremioEMIL(ticket)
-            "eurodreams" -> urlPremioEDMS(ticket)
-            "gordo" -> urlPremioELGR(ticket)
+        val game = ticket.lotteryGame
+        val url = when (game) {
+            is LotteryGame.Primitiva -> urlPremioLAPR(ticket)
+            is LotteryGame.Bonoloto -> urlPremioBONO(ticket)
+            is LotteryGame.Euromillones -> urlPremioEMIL(ticket)
+            is LotteryGame.Eurodreams -> urlPremioEDMS(ticket)
+            is LotteryGame.Gordo -> urlPremioELGR(ticket)
             else -> ""
         }
-        val gameId = when (ticket.gameType) {
-            "bonoloto" -> "BONO"
-            "primitiva" -> "LAPR"
-            "euromillones" -> "EMIL"
-            "eurodreams" -> "EDMS"
-            "gordo" -> "ELGR"
-            else -> ""
-        }
+
+        if (url.isBlank()) return "0.0"
         Log.i("URL", url)
-        val premio = fetchData(webView, url) { getPremio(gameId) }
-        return premio
+
+        val webGameId = when (game) {
+            is LotteryGame.Primitiva -> "primitiva"
+            is LotteryGame.Bonoloto -> "bonoloto"
+            is LotteryGame.Euromillones -> "euromillones"
+            is LotteryGame.Eurodreams -> "eurodreams"
+            is LotteryGame.Gordo -> "gordo"
+            else -> ticket.gameId
+        }
+
+        val premio = fetchData(webView, url) { getPremio(webGameId) }
+        return if (premio.startsWith("Error")) "0.0" else premio
     }
 
     override suspend fun getPremioLNAC(numDecimo: String, idSorteo: String): String {
-
         val url = urlPremioLNACPorNumero(numeroLoteria = numDecimo, idSorteo = idSorteo)
         val data = getInfoAllGames(url)
-        return data[0].getString("premioEnCentimos") ?: "0.2"
+        return data.firstOrNull()?.getString("premioEnCentimos") ?: "0.2"
     }
 
     private fun JsonObject.getString(key: String): String? {
         val element = this[key]
         return if (element is JsonPrimitive) element.contentOrNull else null
     }
-
 }
 
 
@@ -174,8 +311,10 @@ private fun jsonConfig(): Json {
 
 @Serializable
 data class MissingInfoLNAC(
-    val drawId: String,
-    val drawDate: String,
+    val idSorteo: String,
+    val fecha: String,
+    val cierre: String,
+    val apertura: String,
     val precio: String,
     val gameStatus: String,
     val isCelebrado: Boolean

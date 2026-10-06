@@ -23,6 +23,9 @@ data class ResultadoSorteo(
     val premioBote: String,
     val escrutinio: List<Escrutinio>,
 
+    val cierre: String? = null,
+    val apertura: String? = null,
+
     @SerialName("fondo_bote")
     val fondoBote: String? = null,
 

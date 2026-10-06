@@ -2,6 +2,7 @@ package com.example.pruebas.presentation
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -35,24 +36,18 @@ import org.koin.core.parameter.parametersOf
 
 private val fadeTransitionMetadata = metadata {
     put(NavDisplay.TransitionKey) {
-        fadeIn(animationSpec = spring(dampingRatio = 0.8f)) togetherWith fadeOut(
-            animationSpec = spring(
-                dampingRatio = 0.8f
-            )
+        fadeIn(animationSpec = tween(1000)) togetherWith fadeOut(
+            animationSpec = tween(1000)
         )
     }
     put(NavDisplay.PopTransitionKey) {
-        fadeIn(animationSpec = spring(dampingRatio = 0.8f)) togetherWith fadeOut(
-            animationSpec = spring(
-                dampingRatio = 0.8f
-            )
+        fadeIn(animationSpec = tween(1000)) togetherWith fadeOut(
+            animationSpec = tween(1000)
         )
     }
     put(NavDisplay.PredictivePopTransitionKey) {
-        fadeIn(animationSpec = spring(dampingRatio = 0.8f)) togetherWith fadeOut(
-            animationSpec = spring(
-                dampingRatio = 0.8f
-            )
+        fadeIn(animationSpec = tween(1000)) togetherWith fadeOut(
+            animationSpec = tween(1000)
         )
     }
 }

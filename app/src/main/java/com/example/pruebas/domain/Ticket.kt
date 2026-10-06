@@ -5,12 +5,12 @@ import com.example.pruebas.data.db.TicketEntity
 
 data class Ticket(
     val id: String = "",
-    val drawId: String = "",                           // A = 1321902020120280171942842258210547
-    val gameType: String = "",                         // P = 2
+    val idSorteo: String = "",                         // A = 1321902020120280171942842258210547
+    val gameId: String = "",                           // P = 2
     val name: String = "",
     val numeroSorteo: String = "",                     // S = 251......
     val cdc: String = "",                              // A = 13219....
-    val drawDate: String = "",                         // S = 251 08SEP26 :1
+    val fecha: String = "",                            // S = 251 08SEP26 :1
     val gameStatus: String = "",                       // W = 0
     val office: String = "",                           // T = 50050-1
     val numbers: List<String> = emptyList(),           // .1 = 040812273049.2 = 041519274249
@@ -18,6 +18,8 @@ data class Ticket(
     val betPrice: String = "0.0",                       // Precio
     val isWinner: Boolean = false,
     val isChecked: Boolean = false,
+    val cierre: String? = null,
+    val apertura: String? = null,
 
     //Primitiva
     val joker: String? = null,                          // J = NO
@@ -38,18 +40,18 @@ data class Ticket(
     //El Gordo
     val clave: List<String>? = emptyList()
 ) {
-    val lotteryGame: LotteryGame get() = LotteryGame.fromType(gameType)
+    val lotteryGame: LotteryGame get() = LotteryGame.fromType(gameId)
 
     fun toEntity(): TicketEntity {
 
         return TicketEntity(
             id = id,
-            drawId = drawId,
-            gameType = gameType,
+            idSorteo = idSorteo,
+            gameId = gameId,
             name = name,
             numeroSorteo = numeroSorteo,
             cdc = cdc,
-            drawDate = drawDate,
+            fecha = fecha,
             gameStatus = gameStatus,
             office = office,
             numbers = numbers,
@@ -57,6 +59,8 @@ data class Ticket(
             betPrice = betPrice,
             isWinner = isWinner,
             isChecked = isChecked,
+            cierre = cierre,
+            apertura = apertura,
             joker = joker,
             reintegro = reintegro,
             stars = stars,

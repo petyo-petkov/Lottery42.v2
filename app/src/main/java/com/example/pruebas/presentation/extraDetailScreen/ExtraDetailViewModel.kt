@@ -1,20 +1,21 @@
 package com.example.pruebas.presentation.extraDetailScreen
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pruebas.data.isDrawCelebrated
 import com.example.pruebas.domain.LotteryDatabaseRepo
-import com.example.pruebas.domain.NetworkRepo
+import com.example.pruebas.domain.LotteryGame
+import com.example.pruebas.domain.WebViewRepo
 import com.example.pruebas.presentation.homeScreen.TicketUiMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ExtraDetailViewModel(
     ticketId: String,
-    private val netRepo: NetworkRepo,
+    private val webViewRepo: WebViewRepo,
     private val dbRepo: LotteryDatabaseRepo
 ) : ViewModel() {
 
@@ -36,8 +37,6 @@ class ExtraDetailViewModel(
 
         viewModelScope.launch(Dispatchers.IO) {
             state = state.copy(isLoadingInfo = true, error = null)
-//            val tickets = dbRepo.getAllTickets().firstOrNull() ?: emptyList()
-//            val ticket = tickets.find { it.id == ticketId }
             dbRepo.getTicketById(ticketId).collect { ticket ->
                 val uiModel = TicketUiMapper.toUiModel(ticket)
                 state = state.copy(
@@ -45,18 +44,41 @@ class ExtraDetailViewModel(
                     ticketUiModel = uiModel
                 )
 
-                if (ticket.gameType == "nacional"){
-                    val result = netRepo.getInfoNacional(ticket.numeroSorteo)
-                    state = state.copy(infoNacional = result, isLoadingInfo = false)
+                if (!isDrawCelebrated(ticket)) {
+                    state = state.copy(
+                        isLoadingInfo = false,
+                        error = "Sorteo no celebrado"
+                    )
+                    return@collect
+                }
 
-                }else {
-                    val result = netRepo.getInfo(ticket)
-                    result.onSuccess { infoModel ->
-                        state = state.copy(infoModel = infoModel, isLoadingInfo = false)
-                        Log.d("ExtraDetailViewModel", "loadInfo success: $infoModel")
-                    }.onFailure { error ->
-                        state = state.copy(isLoadingInfo = false, error = error.message)
-                        Log.e("ExtraDetailViewModel", "loadInfo failure", error)
+                if (ticket.gameId == "LNAC" || ticket.lotteryGame is LotteryGame.Nacional) {
+                    val result = webViewRepo.getExtraInfoLNAC(ticket)
+                    if (result != null && !isDrawCelebrated(ticket, result.cierre, result.estado)) {
+                        state = state.copy(
+                            infoNacional = null,
+                            isLoadingInfo = false,
+                            error = "Sorteo no celebrado"
+                        )
+                    } else if (result == null) {
+                        state = state.copy(
+                            infoNacional = null,
+                            isLoadingInfo = false,
+                            error = "Sorteo no celebrado"
+                        )
+                    } else {
+                        state = state.copy(infoNacional = result, isLoadingInfo = false)
+                    }
+                } else {
+                    val result = webViewRepo.getExtraInfo(ticket)
+                    if (result == null || !isDrawCelebrated(ticket, result.cierre)) {
+                        state = state.copy(
+                            infoModel = null,
+                            isLoadingInfo = false,
+                            error = "Sorteo no celebrado"
+                        )
+                    } else {
+                        state = state.copy(infoModel = result, isLoadingInfo = false)
                     }
                 }
 

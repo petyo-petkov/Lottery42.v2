@@ -6,9 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pruebas.data.network.lotteryModels.checkModel.CheckModel
+import com.example.pruebas.data.isDrawCelebrated
 import com.example.pruebas.domain.LotteryDatabaseRepo
-import com.example.pruebas.domain.NetworkRepo
+import com.example.pruebas.domain.LotteryGame
 import com.example.pruebas.domain.WebViewRepo
 import com.example.pruebas.presentation.homeScreen.TicketUiMapper
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +18,6 @@ import kotlinx.coroutines.withContext
 
 class DetailViewModel(
     ticketId: String,
-    // private val netRepo: NetworkRepo,
     private val webViewRepo: WebViewRepo,
     private val dbRepo: LotteryDatabaseRepo
 ) : ViewModel() {
@@ -63,61 +62,56 @@ class DetailViewModel(
     private fun checkTicket() {
         val ticket = state.ticketUiModel?.ticket ?: return
 
+        if (!isDrawCelebrated(ticket)) {
+            state = state.copy(
+                isLoadingCheck = false,
+                showCheckDialog = true,
+                error = "Sorteo no celebrado"
+            )
+            return
+        }
+
         // 1. Mostrar estado de carga en el hilo principal
         state = state.copy(isLoadingCheck = true, showCheckDialog = true, error = null)
 
         viewModelScope.launch {
             var totalPrize = 0.0
             var hasError = false
-            var lastErrorMessage: String? = null
-            var lastCheckModel: CheckModel? = null
+            var errorMessage: String? = null
 
             // 2. Ejecutar tareas pesadas (Red / DB) en Dispatchers.IO
             withContext(Dispatchers.IO) {
 
                 // A) Si es Lotería Nacional (LNAC), obtener su premio
-                if (ticket.gameType == "nacional" && !ticket.numDecimo.isNullOrEmpty()) {
+                if ((ticket.gameId == "LNAC" || ticket.lotteryGame is LotteryGame.Nacional) && !ticket.numDecimo.isNullOrEmpty()) {
                     try {
-                        val premioCentimosStr = webViewRepo.getPremioLNAC(
-                            numDecimo = ticket.numDecimo,
-                            idSorteo = ticket.drawId
-                        )
-                        val cents = premioCentimosStr.toDoubleOrNull() ?: 0.0
-                        totalPrize += cents / 100.0
+                        val resultLNAC = webViewRepo.getExtraInfoLNAC(ticket)
+                        if (resultLNAC != null && !isDrawCelebrated(ticket, resultLNAC.cierre, resultLNAC.estado)) {
+                            hasError = true
+                            errorMessage = "Sorteo no celebrado"
+                        } else {
+                            val premioCentimosStr = webViewRepo.getPremioLNAC(
+                                numDecimo = ticket.numDecimo,
+                                idSorteo = ticket.idSorteo
+                            )
+                            val cents = premioCentimosStr.toDoubleOrNull() ?: 0.0
+                            totalPrize += cents / 100.0
+                        }
                     } catch (e: Exception) {
                         hasError = true
                         Log.e("DetailViewModel", "Error en LNAC check", e)
                     }
-                }else {
+                } else {
                     try {
                         val premioSentimos = webViewRepo.getPremios(ticket)
                         val centimos = premioSentimos.toDoubleOrNull() ?: 0.0
                         totalPrize += centimos.div(100)
                     } catch (e: Exception) {
                         hasError = true
-                        Log.e("DetailVireModel", "Error premio check", e)
+                        Log.e("DetailViewModel", "Error premio check", e)
                     }
 
                 }
-
-                /*
-                // B) Comprobar combinaciones vía API
-                val results = netRepo.checkLottery(ticket)
-                results.forEach { result ->
-                    result.onSuccess { checkModel ->
-                        Log.d("DetailViewModel", "checkTicket success: $checkModel")
-                        val amount = checkModel.data?.prize?.prizeAmount?.toDoubleOrNull() ?: 0.0
-                        totalPrize += amount / 100.0
-                        lastCheckModel = checkModel
-                    }.onFailure { error ->
-                        hasError = true
-                        lastErrorMessage = error.message
-                        Log.e("DetailViewModel", "checkTicket failure", error)
-                    }
-                }
-
-                 */
-
                 // C) Guardar en BD solo si la comprobación fue exitosa
                 if (!hasError) {
                     val updatedTicket = ticket.copy(
@@ -131,8 +125,7 @@ class DetailViewModel(
             // 3. Actualizar la UI en el Hilo Principal al finalizar
             state = state.copy(
                 isLoadingCheck = false,
-                //checkModel = lastCheckModel,
-                error = if (hasError) lastErrorMessage else null
+                error = if (hasError) errorMessage else null
             )
         }
     }

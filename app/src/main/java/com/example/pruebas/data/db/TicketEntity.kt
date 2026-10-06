@@ -8,12 +8,12 @@ import com.example.pruebas.domain.Ticket
 @Entity(tableName = "tickets")
 data class TicketEntity(
     @PrimaryKey val id: String,
-    val drawId: String,
-    val gameType: String,
+    val idSorteo: String,
+    val gameId: String,
     val name: String,
     val numeroSorteo: String,
     val cdc: String,
-    val drawDate: String,
+    val fecha: String,
     val gameStatus: String,
     val office: String,
     val numbers: List<String>,
@@ -29,18 +29,20 @@ data class TicketEntity(
     val numDecimo: String?,
     val serie: String?,
     val fraccion: String?,
-    val clave: List<String>?
+    val clave: List<String>?,
+    val cierre: String?,
+    val apertura: String?,
 
 ) {
     fun toDomain(): Ticket {
         return Ticket(
             id = id,
-            drawId = drawId,
-            gameType = gameType,
+            idSorteo = idSorteo,
+            gameId = gameId,
             name = name,
             numeroSorteo = numeroSorteo,
             cdc = cdc,
-            drawDate = drawDate,
+            fecha = fecha,
             gameStatus = gameStatus,
             office = office,
             numbers = numbers,
@@ -57,6 +59,8 @@ data class TicketEntity(
             serie = serie,
             fraccion = fraccion,
             clave = clave,
+            cierre = cierre,
+            apertura = apertura
 
         )
     }

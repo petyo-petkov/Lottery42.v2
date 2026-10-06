@@ -17,7 +17,8 @@ class ScannerRepoImpl(private val scanner: GmsBarcodeScanner) : ScannerRepo {
                         send(barcode.rawValue)
                         Log.i("RawCODE", barcode.rawValue.toString())
                     }
-                }.addOnFailureListener {
+                }
+                .addOnFailureListener {
                     Log.e("ScannerRepo", it.message.toString())
                 }
             awaitClose { }

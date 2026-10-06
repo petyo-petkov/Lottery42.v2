@@ -27,7 +27,7 @@ class ExampleUnitTest {
     @Test
     fun urlPremioBONO_hasCorrectFormat() {
         val ticket = com.example.pruebas.domain.Ticket(
-            drawId = "937601050",
+            idSorteo = "937601050",
             numbers = listOf("04,05,06,23,36,15", "01,02,03,22,25,16"),
             reintegro = "4"
         )
@@ -39,7 +39,7 @@ class ExampleUnitTest {
     @Test
     fun urlPremioEMIL_hasCorrectFormat() {
         val ticket = com.example.pruebas.domain.Ticket(
-            drawId = "1254702089",
+            idSorteo = "1254702089",
             numbers = listOf("08 20 24 01 29", "07 11 22 36 44"),
             stars = listOf("08 09", "07 08")
         )
@@ -51,7 +51,7 @@ class ExampleUnitTest {
     @Test
     fun urlPremioEDMS_hasCorrectFormat() {
         val ticket = com.example.pruebas.domain.Ticket(
-            drawId = "1176214043",
+            idSorteo = "1176214043",
             numbers = listOf("28 27 1 2 3 16", "28 27 1 2 5 34"),
             dreams = listOf("4", "4")
         )
@@ -63,7 +63,7 @@ class ExampleUnitTest {
     @Test
     fun urlPremioELGR_hasCorrectFormat() {
         val ticket = com.example.pruebas.domain.Ticket(
-            drawId = "940205013",
+            idSorteo = "940205013",
             numbers = listOf("28 27 1 2 3", "28 27 1 2 5", "28 27 1 2 8"),
             clave = listOf("4", "4", "3")
         )

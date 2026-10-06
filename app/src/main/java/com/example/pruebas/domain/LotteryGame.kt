@@ -9,28 +9,28 @@ sealed class LotteryGame(
 ) {
     abstract fun calculatePrice(betCount: Int, hasJoker: Boolean = false): Double
 
-    object Primitiva : LotteryGame("1", "La Primitiva", "primitiva", "04", 0xFF43A047) {
+    object Primitiva : LotteryGame("1", "La Primitiva", "LAPR", "04", 0xFF43A047) {
         override fun calculatePrice(betCount: Int, hasJoker: Boolean) =
             (betCount * 1.0) + (if (hasJoker) 1.0 else 0.0)
     }
 
-    object Bonoloto : LotteryGame("2", "Bonoloto", "bonoloto", "01", 0xFF98A065) {
+    object Bonoloto : LotteryGame("2", "Bonoloto", "BONO", "01", 0xFF98A065) {
         override fun calculatePrice(betCount: Int, hasJoker: Boolean) = betCount * 0.5
     }
 
-    object Gordo : LotteryGame("4", "El Gordo", "gordo", "05", 0xFFC0392B) {
+    object Gordo : LotteryGame("4", "El Gordo", "ELGR", "05", 0xFFC0392B) {
         override fun calculatePrice(betCount: Int, hasJoker: Boolean) = betCount * 1.5
     }
 
-    object Euromillones : LotteryGame("7", "Euromillones", "euromillones", "02", 0xFF283593) {
+    object Euromillones : LotteryGame("7", "Euromillones", "EMIL", "02", 0xFF283593) {
         override fun calculatePrice(betCount: Int, hasJoker: Boolean) = betCount * 2.5
     }
 
-    object Nacional : LotteryGame("10", "Loteria Nacional", "nacional", "09", 0xFF0277BD) {
+    object Nacional : LotteryGame("10", "Loteria Nacional", "LNAC", "09", 0xFF0277BD) {
         override fun calculatePrice(betCount: Int, hasJoker: Boolean) = 3.0
     }
 
-    object Eurodreams : LotteryGame("14", "Eurodreams", "eurodreams", "14", 0xFF8E24AA) {
+    object Eurodreams : LotteryGame("14", "Eurodreams", "EDMS", "14", 0xFF8E24AA) {
         override fun calculatePrice(betCount: Int, hasJoker: Boolean) = betCount * 2.5
     }
 
@@ -49,13 +49,13 @@ sealed class LotteryGame(
             else -> Unknown
         }
 
-        fun fromType(type: String?): LotteryGame = when (type) {
-            "primitiva" -> Primitiva
-            "bonoloto" -> Bonoloto
-            "gordo" -> Gordo
-            "euromillones" -> Euromillones
-            "nacional" -> Nacional
-            "eurodreams" -> Eurodreams
+        fun fromType(type: String?): LotteryGame = when (type?.uppercase()?.trim()) {
+            "LAPR", "PRIMITIVA", "LA PRIMITIVA" -> Primitiva
+            "BONO", "BONOLOTO" -> Bonoloto
+            "ELGR", "GORDO", "EL GORDO", "ELGORDO" -> Gordo
+            "EMIL", "EUROMILLONES" -> Euromillones
+            "LNAC", "NACIONAL", "LOTERIA NACIONAL", "LOTERIANACIONAL" -> Nacional
+            "EDMS", "EURODREAMS" -> Eurodreams
             else -> Unknown
         }
     }

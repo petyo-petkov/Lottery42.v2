@@ -11,13 +11,13 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface LotteryDAO {
-    @Query("SELECT * FROM tickets ORDER BY drawDate DESC")
+    @Query("SELECT * FROM tickets ORDER BY fecha DESC")
     fun getAllTickets(): Flow<List<TicketEntity>>
 
     @Query("SELECT * FROM tickets WHERE id = :id")
     fun getById(id: String): Flow<TicketEntity?>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(lotteryEntity: TicketEntity)
 
     @Update

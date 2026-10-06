@@ -18,12 +18,12 @@ suspend fun ticketFromBarCode(
 
     return Ticket(
         id = id,
-        drawId = missingInfo?.drawId ?: "",
-        cdc = missingInfo?.drawId?.take(5) ?: "",
-        gameType = "nacional",
+        idSorteo = missingInfo?.idSorteo ?: "",
+        cdc = missingInfo?.idSorteo?.take(5) ?: "",
+        gameId = "LNAC",
         name = "Loteria Nacional",
         numeroSorteo = numSorteo,
-        drawDate = missingInfo?.drawDate ?: "",
+        fecha = missingInfo?.fecha ?: "",
         gameStatus = missingInfo?.gameStatus ?: "",
         office = "office?",
         numbers = emptyList(),
@@ -33,6 +33,8 @@ suspend fun ticketFromBarCode(
         numDecimo = numDecimo,
         serie = serie,
         fraccion = fraccion,
+        cierre = missingInfo?.cierre ?: "",
+        apertura = missingInfo?.apertura ?: ""
     )
 
 }

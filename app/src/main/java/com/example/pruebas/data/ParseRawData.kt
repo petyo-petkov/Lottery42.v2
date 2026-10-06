@@ -1,7 +1,5 @@
 package com.example.pruebas.data
 
-import com.example.pruebas.data.network.lotteryModels.scannModel.ScannData
-
 //fun parseRawData(raw: String): ScannData {
 //    val map = mutableMapOf<String, String>()
 //    val bets = mutableListOf<String>()

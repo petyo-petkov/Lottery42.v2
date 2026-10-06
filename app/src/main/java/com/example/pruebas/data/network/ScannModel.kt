@@ -1,4 +1,4 @@
-package com.example.pruebas.data.network.lotteryModels.scannModel
+package com.example.pruebas.data.network
 
 import kotlinx.serialization.Serializable
 

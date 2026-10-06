@@ -49,7 +49,7 @@ fun TicketUI(
         ) {
             // Date
             Fila(
-                text = ticket.drawDate.toDisplayDate(),
+                text = ticket.fecha.toDisplayDate(),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )

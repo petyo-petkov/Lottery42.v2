@@ -24,7 +24,8 @@ import com.example.pruebas.presentation.detailScreen.detailsScreens.NumberCircle
 fun ExtraInfoNcional(
     state: ExtraDetailUiState
 ) {
-    val info = state.infoNacional?.data?.lastOrNull()
+    // val info = state.infoNacional?.data?.lastOrNull()
+    val info = state.infoNacional
     val ticket = state.selectedTicket
     val uiModel = state.ticketUiModel
 
@@ -40,13 +41,13 @@ fun ExtraInfoNcional(
     ) {
 
         InfoText(
-            text = info?.game?.name ?: "",
+            text = "Loteria Nacional",
             style = MaterialTheme.typography.displaySmall,
             color = Color(uiModel?.lotteryColorHex ?: 1L)
         )
         Divisor()
 
-        InfoText(text = info?.drawDate?.toDisplayDate() ?: "")
+        InfoText(text = info?.fecha_sorteo?.toDisplayDate() ?: "")
         Divisor()
 
         InfoText(text = "Décimo: ${ticket?.numDecimo}")
@@ -69,23 +70,23 @@ fun ExtraInfoNcional(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                InfoText(info?.resultData?.primerPremio?.literalPremio?.es)
-                InfoText(info?.resultData?.primerPremio?.decimo)
+                InfoText("Primer premio")
+                InfoText(info?.primerPremio?.decimo)
             }
             //Segundo Premio
             Column(
                 modifier = Modifier,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                InfoText(info?.resultData?.segundoPremio?.literalPremio?.es)
-                InfoText(info?.resultData?.segundoPremio?.decimo)
+                InfoText("Segundo premio")
+                InfoText(info?.segundoPremio?.decimo)
 
             }
         }
         Divisor()
-        if (info?.resultData?.tercerosPremios?.isNotEmpty() == true ||
-            info?.resultData?.cuartosPremios?.isNotEmpty() == true ||
-            info?.resultData?.quintosPremios?.isNotEmpty() == true
+        if (info?.tercerosPremios?.isNotEmpty() == true ||
+            info?.cuartosPremios?.isNotEmpty() == true ||
+            info?.quintosPremios?.isNotEmpty() == true
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -97,8 +98,8 @@ fun ExtraInfoNcional(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     InfoText("Terceros premios:")
-                    info.resultData.tercerosPremios?.forEach { premio ->
-                        if (!premio.decimo.isNullOrEmpty())
+                    info.tercerosPremios.forEach { premio ->
+                        if (premio.decimo.isNotEmpty())
                             InfoText(premio.decimo)
                     }
                 }
@@ -115,8 +116,8 @@ fun ExtraInfoNcional(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     InfoText("Cuartos premios:")
-                    info.resultData.cuartosPremios?.forEach { premio ->
-                        InfoText(premio?.decimo)
+                    info.cuartosPremios.forEach { premio ->
+                        InfoText(premio.decimo)
                     }
 
                 }
@@ -132,31 +133,22 @@ fun ExtraInfoNcional(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     InfoText("Quintos premios:")
-                    info.resultData.quintosPremios?.forEach { premio ->
-                        InfoText(premio?.decimo)
+                    info.quintosPremios.forEach { premio ->
+                        InfoText(premio.decimo)
                     }
 
                 }
             }
             Divisor()
         }
-
-    }
-
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
         InfoText("Reintegros:")
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            info?.resultData?.reintegros?.forEach { reintegro ->
-                if (!reintegro.decimo.isNullOrEmpty())
-                    NumberCircle(reintegro.decimo)
+            info?.reintegros?.forEach { reintegro ->
+                NumberCircle(reintegro.decimo)
             }
         }
     }

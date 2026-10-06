@@ -22,12 +22,12 @@ fun parse(rawData: String): Map<String, String> {
 fun ticketFromQrCode(rawData: String): Ticket {
     val pairs = parse(rawData)
 
-    val id = pairs["A"] ?: ""
+    val id = pairs["A"] ?: rawData
     val numeroSorteo = pairs["S"]?.take(3) ?: ""
     val cdc = pairs["A"]?.take(5) ?: ""
     val gameStatus = pairs["W"] ?: ""
     val office = pairs["T"] ?: ""
-    val date = pairs["S"]?.substringBefore(":")?.takeLast(7)?.toStoreDate() ?: ""
+    val fecha = pairs["S"]?.substringBefore(":")?.takeLast(7)?.toStoreDate() ?: ""
     
     val game = LotteryGame.fromPValue(pairs["P"])
     
@@ -95,12 +95,12 @@ fun ticketFromQrCode(rawData: String): Ticket {
 
     return Ticket(
         id = id,
-        drawId = "${cdc}${game.apiId}$numeroSorteo",
-        gameType = game.type,
+        idSorteo = "${cdc}${game.apiId}$numeroSorteo",
+        gameId = game.type,
         name = game.name,
         numeroSorteo = numeroSorteo,
         cdc = cdc,
-        drawDate = date,
+        fecha = fecha,
         gameStatus = gameStatus,
         office = office,
         numbers = numbers,
@@ -115,6 +115,8 @@ fun ticketFromQrCode(rawData: String): Ticket {
         numDecimo = numLottery,
         serie = serie,
         fraccion = fraccion,
-        clave = claves
+        clave = claves,
+        cierre = fecha,
+        apertura = null
     )
 }

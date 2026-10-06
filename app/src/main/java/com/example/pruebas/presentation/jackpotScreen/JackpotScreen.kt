@@ -56,7 +56,9 @@ fun JackpotScreen(
 
             else -> {
                 Column(
-                    modifier = Modifier.fillMaxWidth().padding(12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -73,12 +75,14 @@ fun JackpotScreen(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         items(jackpotState.jackpots) { item ->
+
                             JackpotCard(
                                 nombre = item.nombre,
                                 fechaCierre = item.fechaCierre,
                                 estado = item.estado,
                                 jackpot = item.jackpot
                             )
+
                         }
                     }
                 }

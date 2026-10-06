@@ -12,12 +12,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.pruebas.data.network.lotteryModels.infoModel.InfoLotteryPrize
-import kotlin.collections.forEach
+import com.example.pruebas.data.network.webViewModels.Escrutinio
 
 
 @Composable
-fun EscrutinioSection(prize: List<InfoLotteryPrize?>) {
+fun EscrutinioSection(prize: List<Escrutinio?>) {
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -60,17 +59,17 @@ fun EscrutinioSection(prize: List<InfoLotteryPrize?>) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = item?.categoryName ?: "",
+                    text = item?.categoria.toString() ,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.weight(1f)
                 )
                 Text(
-                    text = item?.winners.toString(),
+                    text = item?.ganadores.toString(),
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.weight(1f)
                 )
                 Text(
-                    text = "${item?.formattedPrize}",
+                    text = item?.premio ?: "",
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.End
