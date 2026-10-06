@@ -2,8 +2,10 @@ package com.example.pruebas.data.db
 
 import com.example.pruebas.domain.LotteryDatabaseRepo
 import com.example.pruebas.domain.Ticket
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 class LotteryDatabaseRepoImpl(
     private val dao: LotteryDAO
@@ -21,19 +23,27 @@ class LotteryDatabaseRepoImpl(
     }
 
     override suspend fun createTicket(ticket: Ticket) {
-        dao.insert(ticket.toEntity())
+        withContext(Dispatchers.IO) {
+            dao.insert(ticket.toEntity())
+        }
     }
 
     override suspend fun updateTicket(ticket: Ticket) {
-        dao.update(ticket.toEntity())
+        withContext(Dispatchers.IO) {
+            dao.update(ticket.toEntity())
+        }
     }
 
     override suspend fun deleteTicket(ticket: Ticket) {
-        dao.delete(ticket.toEntity())
+        withContext(Dispatchers.IO) {
+            dao.delete(ticket.toEntity())
+        }
     }
 
     override suspend fun deleteAll() {
-        dao.deleteAll()
+        withContext(Dispatchers.IO) {
+            dao.deleteAll()
+        }
     }
 
 }
