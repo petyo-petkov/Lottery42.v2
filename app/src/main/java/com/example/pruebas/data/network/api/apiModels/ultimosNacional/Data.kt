@@ -21,7 +21,7 @@ data class Data(
     @SerialName("id")
     val id: String,
     @SerialName("officialListUrl")
-    val officialListUrl: String?,
+    val officialListUrl: String? = null,
     @SerialName("prizes")
     val prizes: List<Prize>,
     @SerialName("resultData")

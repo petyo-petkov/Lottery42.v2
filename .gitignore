@@ -15,5 +15,6 @@
 
 # Ignored private configuration / network files
 URLS.kt
+ApiURLS.kt
 NetPruebas.kt
 /app/src/main/java/com/example/pruebas/data/network/urlsGetPremio/

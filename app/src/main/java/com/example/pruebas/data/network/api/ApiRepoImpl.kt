@@ -22,22 +22,26 @@ class ApiRepoImpl(private val client: HttpClient) : ApiRepo {
 
     }
 
-    override suspend fun getMissingDataNacional(drawId: String): MissingDataNacional? {
+    override suspend fun getMissingDataNacional(numSorteo: String): MissingDataNacional {
 
         try {
             val proximos = client
                 .get(GET_PROXIMOS_NACIONAL)
                 .body<ProximosNacional>()
 
-            val sorteo = proximos.data.find { it.drawId.takeLast(3) == drawId }
-            return MissingDataNacional(
-                drawId = sorteo?.drawId ?: "",
-                fecha = sorteo?.drawDate ?: "",
-                cierre = sorteo?.closingDate ?: "",
-                precio = sorteo?.metadata?.precio.toString(),
-                status = sorteo?.status ?: ""
-            )
+            val sorteo = proximos.data.find { it.drawId.takeLast(3) == numSorteo }
 
+            Log.i("proximo sorteo", sorteo.toString())
+
+            if (sorteo != null) {
+                return MissingDataNacional(
+                    drawId = sorteo.drawId,
+                    fecha = sorteo.drawDate,
+                    cierre = sorteo.closingDate,
+                    precio = sorteo.metadata.precio.toString(),
+                    status = sorteo.status
+                )
+            }
         } catch (e: Exception) {
             Log.e("Error en getMissingData proximos", e.message ?: "")
         }
@@ -47,14 +51,17 @@ class ApiRepoImpl(private val client: HttpClient) : ApiRepo {
                 .get(GET_ULTIMOS_NACIONAL)
                 .body<UltimosNacional>()
 
-            val sorteo = ultimos.data.find { it.drawId.takeLast(3) == drawId }
+            val sorteo = ultimos.data.find { it.drawId.takeLast(3) == numSorteo }
+
+            Log.i("ultimo sorteo", sorteo.toString())
+
             if (sorteo != null) {
-                val precio = sorteo.resultData.reintegros.map { it.prize.div(100) }
+                val precio = sorteo.resultData.reintegros.firstOrNull()?.prize?.div(100)?.toString() ?: "0.0"
                 return MissingDataNacional(
                     drawId = sorteo.drawId,
                     fecha = sorteo.drawDate,
                     cierre = sorteo.drawDate,
-                    precio = precio.toString(),
+                    precio = precio,
                     status = sorteo.status
                 )
             }
@@ -62,6 +69,6 @@ class ApiRepoImpl(private val client: HttpClient) : ApiRepo {
             Log.e("Error en getMissingData ultimos", e.message ?: "")
         }
 
-        return null
+        return MissingDataNacional("", "", "", "", "")
     }
 }

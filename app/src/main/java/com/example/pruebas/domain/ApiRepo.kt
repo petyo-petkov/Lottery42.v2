@@ -7,7 +7,7 @@ interface ApiRepo {
 
     suspend fun getInfo(url: String): List<JsonObject>
 
-    suspend fun getMissingDataNacional(drawId: String): MissingDataNacional?
+    suspend fun getMissingDataNacional(numSorteo: String): MissingDataNacional
 
 }
 
