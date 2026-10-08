@@ -1,6 +1,10 @@
 package com.example.pruebas
 
 import com.example.pruebas.data.network.NetPruebas
+import com.example.pruebas.data.network.webView.urlsGetPremio.urlPremioBONO
+import com.example.pruebas.data.network.webView.urlsGetPremio.urlPremioEDMS
+import com.example.pruebas.data.network.webView.urlsGetPremio.urlPremioELGR
+import com.example.pruebas.data.network.webView.urlsGetPremio.urlPremioEMIL
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
@@ -31,7 +35,7 @@ class ExampleUnitTest {
             numbers = listOf("04,05,06,23,36,15", "01,02,03,22,25,16"),
             reintegro = "4"
         )
-        val url = com.example.pruebas.data.network.urlsGetPremio.urlPremioBONO(ticket)
+        val url = urlPremioBONO(ticket)
         val expected = "https://www.loteriasyapuestas.es/es/resultados/bonoloto/comprobar?drawId=937601050&modalidad=simple&bloque1=4y5y6y23y36y15&bloque2=1y2y3y22y25y16&reintegro=4"
         assertEquals(expected, url)
     }
@@ -43,7 +47,7 @@ class ExampleUnitTest {
             numbers = listOf("08 20 24 01 29", "07 11 22 36 44"),
             stars = listOf("08 09", "07 08")
         )
-        val url = com.example.pruebas.data.network.urlsGetPremio.urlPremioEMIL(ticket)
+        val url = urlPremioEMIL(ticket)
         val expected = "https://www.loteriasyapuestas.es/es/resultados/euromillones/comprobar?drawId=1254702089&modalidad=simple&bloque1=08y20y24y01y29&estrellas1=08y09&bloque2=07y11y22y36y44&estrellas2=07y08"
         assertEquals(expected, url)
     }
@@ -55,7 +59,7 @@ class ExampleUnitTest {
             numbers = listOf("28 27 1 2 3 16", "28 27 1 2 5 34"),
             dreams = listOf("4", "4")
         )
-        val url = com.example.pruebas.data.network.urlsGetPremio.urlPremioEDMS(ticket)
+        val url = urlPremioEDMS(ticket)
         val expected = "https://www.loteriasyapuestas.es/es/resultados/eurodreams/comprobar?drawId=1176214043&modalidad=simple&bloque1=28y27y1y2y3y16&numero1=4&bloque2=28y27y1y2y5y34&numero2=4"
         assertEquals(expected, url)
     }
@@ -67,7 +71,7 @@ class ExampleUnitTest {
             numbers = listOf("28 27 1 2 3", "28 27 1 2 5", "28 27 1 2 8"),
             clave = listOf("4", "4", "3")
         )
-        val url = com.example.pruebas.data.network.urlsGetPremio.urlPremioELGR(ticket)
+        val url = urlPremioELGR(ticket)
         val expected = "https://www.loteriasyapuestas.es/es/resultados/gordo-primitiva/comprobar?drawId=940205013&modalidad=simple&bloque1=28y27y1y2y3&reintegro1=4&bloque2=28y27y1y2y5&reintegro2=4&bloque3=28y27y1y2y8&reintegro3=3"
         assertEquals(expected, url)
     }

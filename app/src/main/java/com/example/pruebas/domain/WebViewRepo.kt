@@ -1,8 +1,8 @@
 package com.example.pruebas.domain
 
-import com.example.pruebas.data.network.MissingInfoLNAC
-import com.example.pruebas.data.network.webViewModels.ResultadoSorteo
-import com.example.pruebas.data.network.webViewModels.lnac.ResultadoSorteoLNAC
+import com.example.pruebas.data.network.webView.MissingInfoLNAC
+import com.example.pruebas.data.network.webView.webViewModels.ResultadoSorteo
+import com.example.pruebas.data.network.webView.webViewModels.lnac.ResultadoSorteoLNAC
 import kotlinx.serialization.json.JsonObject
 
 interface WebViewRepo {

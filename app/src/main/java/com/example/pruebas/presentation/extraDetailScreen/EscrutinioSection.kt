@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.pruebas.data.network.webViewModels.Escrutinio
+import com.example.pruebas.data.network.webView.webViewModels.Escrutinio
 
 
 @Composable

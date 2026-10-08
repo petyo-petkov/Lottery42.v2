@@ -9,7 +9,9 @@ import com.example.pruebas.data.BalanceRepoImpl
 import com.example.pruebas.data.ScannerRepoImpl
 import com.example.pruebas.data.db.AppDatabase
 import com.example.pruebas.data.db.LotteryDatabaseRepoImpl
-import com.example.pruebas.data.network.WebViewRepoImpl
+import com.example.pruebas.data.network.api.ApiRepoImpl
+import com.example.pruebas.data.network.webView.WebViewRepoImpl
+import com.example.pruebas.domain.ApiRepo
 import com.example.pruebas.domain.BalanceRepo
 import com.example.pruebas.domain.LotteryDatabaseRepo
 import com.example.pruebas.domain.ScannerRepo
@@ -67,6 +69,7 @@ val repositoryModule = module {
     singleOf(::LotteryDatabaseRepoImpl) bind LotteryDatabaseRepo::class
     singleOf(::BalanceRepoImpl) bind BalanceRepo::class
     singleOf(::WebViewRepoImpl) bind WebViewRepo::class
+    singleOf(::ApiRepoImpl) bind ApiRepo::class
 }
 
 val databaseModule = module {
@@ -85,6 +88,7 @@ val databaseModule = module {
 }
 
 val networkModule = module {
+
     single {
         HttpClient(CIO) {
             install(ContentNegotiation) {
@@ -100,6 +104,7 @@ val networkModule = module {
                 header("Authorization", "Bearer ${BuildConfig.LOTTERY_API_KEY}")
             }
         }
+
     }
 
     single {
