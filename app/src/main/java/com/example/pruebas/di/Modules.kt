@@ -62,7 +62,7 @@ val viewModelModule = module {
     viewModelOf(::ScannerViewModel)
     viewModelOf(::JackpotScreenViewModel)
     viewModel { [ticketId: String] -> DetailViewModel(ticketId = ticketId, webViewRepo = get(), dbRepo = get()) }
-    viewModel { [ticketId: String] -> ExtraDetailViewModel(ticketId = ticketId, webViewRepo = get(), dbRepo = get()) }
+    viewModel { [ticketId: String] -> ExtraDetailViewModel(ticketId = ticketId, webViewRepo = get(), apiRepo = get(), dbRepo = get()) }
 }
 
 val repositoryModule = module {

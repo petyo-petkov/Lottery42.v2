@@ -5,6 +5,8 @@ import com.example.pruebas.data.network.webView.urlsGetPremio.urlPremioBONO
 import com.example.pruebas.data.network.webView.urlsGetPremio.urlPremioEDMS
 import com.example.pruebas.data.network.webView.urlsGetPremio.urlPremioELGR
 import com.example.pruebas.data.network.webView.urlsGetPremio.urlPremioEMIL
+import com.example.pruebas.data.parsePrize
+import com.example.pruebas.data.toCurrencyFormat
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
@@ -81,5 +83,24 @@ class ExampleUnitTest {
         val rawData = "P=2;S=251;W=0"
         val ticket = com.example.pruebas.data.ticketFromQrCode(rawData)
         assertEquals(rawData, ticket.id)
+    }
+
+    @Test
+    fun parsePrize_isCorrect() {
+        assertEquals(2.5, "2,50".parsePrize(), 0.001)
+        assertEquals(1234.56, "1.234,56".parsePrize(), 0.001)
+        assertEquals(10.0, "10".parsePrize(), 0.001)
+        assertEquals(0.0, "€".parsePrize(), 0.001)
+        assertEquals(0.0, null.parsePrize(), 0.001)
+    }
+
+    @Test
+    fun toCurrencyFormat_isCorrect() {
+        val amount = "2.5"
+        val formattedWithDecimals = amount.toCurrencyFormat(withDecimals = true)
+        assertTrue(formattedWithDecimals.contains("2,50") || formattedWithDecimals.contains("2,5"))
+
+        val formattedWithoutDecimals = amount.toCurrencyFormat(withDecimals = false)
+        assertTrue(formattedWithoutDecimals.contains("2"))
     }
 }

@@ -1,5 +1,6 @@
 package com.example.pruebas.presentation.extraDetailScreen
 
+import com.example.pruebas.data.network.api.apiModels.extraInfo.extraEuromillones.Prize
 import com.example.pruebas.data.network.webView.webViewModels.ResultadoSorteo
 import com.example.pruebas.data.network.webView.webViewModels.lnac.ResultadoSorteoLNAC
 import com.example.pruebas.domain.Ticket
@@ -10,6 +11,13 @@ data class ExtraDetailUiState(
     val infoModel: ResultadoSorteo? = null,
     val infoNacional: ResultadoSorteoLNAC? = null,
     val ticketUiModel: TicketUiModel? = null,
+    val isLoadingInfo: Boolean = false,
+    val error: String? = null
+)
+
+data class ApiExtraInfo(
+    val apiInfo: Any? = null,
+    val selectedTicket: Ticket? = null,
     val isLoadingInfo: Boolean = false,
     val error: String? = null
 )

@@ -6,21 +6,29 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pruebas.data.isDrawCelebrated
+import com.example.pruebas.data.network.api.apiModels.extraInfo.extraBonoloto.ExtraBonoloto
+import com.example.pruebas.data.network.api.apiModels.extraInfo.extraEuromillones.ExtraEuromillones
+import com.example.pruebas.data.network.api.apiModels.extraInfo.extraPrimitiva.ExtraPrimitiva
+import com.example.pruebas.domain.ApiRepo
 import com.example.pruebas.domain.LotteryDatabaseRepo
 import com.example.pruebas.domain.LotteryGame
 import com.example.pruebas.domain.WebViewRepo
 import com.example.pruebas.presentation.homeScreen.TicketUiMapper
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class ExtraDetailViewModel(
     ticketId: String,
     private val webViewRepo: WebViewRepo,
+    private val apiRepo: ApiRepo,
     private val dbRepo: LotteryDatabaseRepo
 ) : ViewModel() {
 
     var state by mutableStateOf(ExtraDetailUiState())
         private set
+
+    var apiState by mutableStateOf(ApiExtraInfo())
 
     init {
         loadInfo(ticketId)
@@ -37,7 +45,8 @@ class ExtraDetailViewModel(
 
         viewModelScope.launch(Dispatchers.IO) {
             state = state.copy(isLoadingInfo = true, error = null)
-            dbRepo.getTicketById(ticketId).collect { ticket ->
+
+                val ticket = dbRepo.getTicketById(ticketId).first()
                 val uiModel = TicketUiMapper.toUiModel(ticket)
                 state = state.copy(
                     selectedTicket = ticket,
@@ -49,7 +58,7 @@ class ExtraDetailViewModel(
                         isLoadingInfo = false,
                         error = "Sorteo no celebrado"
                     )
-                    return@collect
+                    return@launch
                 }
 
                 if (ticket.gameId == "LNAC" || ticket.lotteryGame is LotteryGame.Nacional) {
@@ -82,8 +91,51 @@ class ExtraDetailViewModel(
                     }
                 }
 
-            }
+
 
         }
     }
+
+    private fun loadApiInfo(ticketId: String) {
+        if (apiState.selectedTicket?.id == ticketId && apiState.apiInfo != null) return
+
+        viewModelScope.launch(Dispatchers.IO) {
+            apiState = apiState.copy(isLoadingInfo = true, error = null)
+
+            try {
+                val ticket = dbRepo.getTicketById(ticketId).first()
+
+                apiState = apiState.copy(selectedTicket = ticket)
+
+                val result: Any? = when (ticket.gameId) {
+                    "LAPR" -> apiRepo.getExtraPrimitiva(ticket)
+                    "BONO" -> apiRepo.getExtraBonoloto(ticket)
+                    "EMIL" -> apiRepo.getExtraEuromillones(ticket)
+                    else -> null
+                }
+
+                apiState = if (result != null) {
+                    apiState.copy(
+                        apiInfo = result,
+                        isLoadingInfo = false,
+                        error = null
+                    )
+                } else {
+                    apiState.copy(
+                        apiInfo = null,
+                        isLoadingInfo = false,
+                        error = "No se pudieron cargar los datos adicionales"
+                    )
+                }
+
+            } catch (e: Exception) {
+                apiState = apiState.copy(
+                    isLoadingInfo = false,
+                    error = e.localizedMessage ?: "Error desconocido"
+                )
+            }
+        }
+    }
+
+
 }

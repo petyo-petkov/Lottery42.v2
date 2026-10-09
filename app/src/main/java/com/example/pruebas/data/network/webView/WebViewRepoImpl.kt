@@ -272,20 +272,29 @@ class WebViewRepoImpl(private val webView: WebView) : WebViewRepo {
         Log.i("URL", url)
 
         val webGameId = when (game) {
-            is LotteryGame.Primitiva -> "primitiva"
-            is LotteryGame.Bonoloto -> "bonoloto"
-            is LotteryGame.Euromillones -> "euromillones"
-            is LotteryGame.Eurodreams -> "eurodreams"
-            is LotteryGame.Gordo -> "gordo"
+            is LotteryGame.Primitiva -> "LAPR"
+            is LotteryGame.Bonoloto -> "BONO"
+            is LotteryGame.Euromillones -> "EMIL"
+            is LotteryGame.Eurodreams -> "EDMS"
+            is LotteryGame.Gordo -> "ELGR"
             else -> ticket.gameId
         }
 
-        val premio = fetchData(webView, url) { getPremio(webGameId) }
+        val premio = fetchData(
+            webView = webView,
+            url = url,
+            fetchFun = { getPremio(webGameId) }
+        ).replace("€", "")
+
+
         return if (premio.startsWith("Error")) "0.0" else premio
     }
 
-    override suspend fun getPremioLNAC(numDecimo: String, idSorteo: String): String {
-        val url = urlPremioLNACPorNumero(numeroLoteria = numDecimo, idSorteo = idSorteo)
+    override suspend fun getPremioLNAC(ticket: Ticket): String {
+        val numDecimo = ticket.numDecimo
+        val idSorteo = ticket.idSorteo
+
+        val url =if(numDecimo != null) urlPremioLNACPorNumero(numeroLoteria = numDecimo, idSorteo = idSorteo) else ""
         val data = getInfoAllGames(url)
         return data.firstOrNull()?.getString("premioEnCentimos") ?: "0.2"
     }

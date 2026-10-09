@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.map
 class BalanceRepoImpl: BalanceRepo {
     override fun getBalance(tickets: Flow<List<Ticket>>): Flow<BalanceState> {
        return tickets.map { ticket ->
-           val ganado = ticket.sumOf { it.prize.toDoubleOrNull() ?: 0.0 }
-           val gastado = ticket.sumOf { it.betPrice.toDoubleOrNull() ?: 0.0 }
+           val ganado = ticket.sumOf { it.prize.parsePrize() }
+           val gastado = ticket.sumOf { it.betPrice.parsePrize() }
            val balance = ganado - gastado
            val porcentaje = if (gastado > 0.0) ((balance) / gastado) * 100 else 0.0
            BalanceState(

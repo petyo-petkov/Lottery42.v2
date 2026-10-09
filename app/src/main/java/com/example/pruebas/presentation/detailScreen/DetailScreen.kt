@@ -117,7 +117,7 @@ fun DetailScreen(
             ) {
                 InfoText(text = "Premio:")
                 if (!ticket.isChecked) InfoText("Sin comprobar") else InfoText(
-                    text = "${(ticket.prize.toDoubleOrNull() ?: 0.1)} €"
+                    text = "${ticket.prize} €"
                 )
             }
             Divisor()

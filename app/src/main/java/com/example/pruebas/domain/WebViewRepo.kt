@@ -15,7 +15,7 @@ interface WebViewRepo {
 
     suspend fun getMissingInfoLNAC(numSorteo: String): MissingInfoLNAC?
 
-    suspend fun getPremioLNAC(numDecimo: String, idSorteo: String): String
+    suspend fun getPremioLNAC(ticket: Ticket): String
 
     suspend fun getPremios(ticket: Ticket): String
 

@@ -2,11 +2,12 @@ package com.example.pruebas.presentation.homeScreen
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.pruebas.data.parsePrize
 import com.example.pruebas.domain.Ticket
 
 object TicketUiMapper {
     fun toUiModel(ticket: Ticket): TicketUiModel {
-        val prizeValue = ticket.prize.toDoubleOrNull() ?: 0.0
+        val prizeValue = ticket.prize.parsePrize()
         val status = when {
             !ticket.isChecked -> PrizeStatus.UNKNOWN
             prizeValue == 0.0 -> PrizeStatus.NO_PRIZE

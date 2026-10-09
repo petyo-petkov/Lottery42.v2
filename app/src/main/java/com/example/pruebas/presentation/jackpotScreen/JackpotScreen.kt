@@ -116,7 +116,7 @@ fun JackpotCard(
             Spacer(modifier = Modifier.height(4.dp))
             if (jackpot.isNotBlank()) {
                 Text(
-                    text = "Bote: ${jackpot.toCurrencyFormat()}",
+                    text = "Bote: ${jackpot.toCurrencyFormat(withDecimals = false)}",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.SemiBold
