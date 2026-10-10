@@ -1,5 +1,4 @@
-package com.example.pruebas.data.network.api.apiModels.extraInfo.extraEuromillones
-
+package com.example.pruebas.data.network.api.apiModels.extraInfo.extraInfoSorteos
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -20,10 +19,6 @@ data class Data(
     val game: Game,
     @SerialName("id")
     val id: String,
-    @SerialName("jackpot")
-    val jackpot: String,
-    @SerialName("jackpotFormatted")
-    val jackpotFormatted: String,
     @SerialName("prizes")
     val prizes: List<Prize>,
     @SerialName("resultData")
@@ -31,5 +26,12 @@ data class Data(
     @SerialName("status")
     val status: String,
     @SerialName("year")
-    val year: Int
-)
+    val year: Int,
+    @SerialName("jackpot")
+    val jackpot: String? = null,
+    @SerialName("jackpotFormatted")
+    val jackpotFormatted: String? = null,
+    @SerialName("statistics")
+    val statistics: Statistics? = null
+
+    )

@@ -40,8 +40,8 @@ fun ExtraDetailScreen(
     val infoModel = state.infoModel
     val isLoading = state.isLoadingInfo
 
-    //val info = infoModel?.data?.getOrNull(0)
     val info = infoModel
+
 
     OutlinedCard(
         modifier = modifier

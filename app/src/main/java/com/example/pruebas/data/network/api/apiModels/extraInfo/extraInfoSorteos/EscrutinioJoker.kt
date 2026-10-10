@@ -1,5 +1,4 @@
-package com.example.pruebas.data.network.api.apiModels.extraInfo.extraPrimitiva
-
+package com.example.pruebas.data.network.api.apiModels.extraInfo.extraInfoSorteos
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

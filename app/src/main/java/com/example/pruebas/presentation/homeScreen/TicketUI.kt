@@ -30,6 +30,11 @@ fun TicketUI(
 ) {
     val ticket = uiModel.ticket
     val lotteryColor = Color(uiModel.lotteryColorHex)
+    val prizeBackgroundColor = when(uiModel.prizeStatus){
+        PrizeStatus.NO_PRIZE -> MaterialTheme.colorScheme.surfaceContainerLowest
+        PrizeStatus.WINNER -> MaterialTheme.colorScheme.surfaceContainerLow
+        PrizeStatus.UNKNOWN ->  MaterialTheme.colorScheme.surfaceContainerLowest
+    }
 
     ElevatedCard(
         onClick = { onClick(ticket) },
@@ -38,7 +43,7 @@ fun TicketUI(
             .height(uiModel.height.dp),
 
         shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest),
+        colors = CardDefaults.outlinedCardColors(containerColor = prizeBackgroundColor),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = uiModel.elevation)
     ) {
 

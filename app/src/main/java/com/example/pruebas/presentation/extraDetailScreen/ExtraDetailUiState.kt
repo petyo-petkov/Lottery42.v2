@@ -1,6 +1,5 @@
 package com.example.pruebas.presentation.extraDetailScreen
 
-import com.example.pruebas.data.network.api.apiModels.extraInfo.extraEuromillones.Prize
 import com.example.pruebas.data.network.webView.webViewModels.ResultadoSorteo
 import com.example.pruebas.data.network.webView.webViewModels.lnac.ResultadoSorteoLNAC
 import com.example.pruebas.domain.Ticket
